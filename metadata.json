@@ -1,0 +1,5 @@
+{
+  "name": "RoomieMatch",
+  "description": "A roommate and room-finding platform for university students with safety maps and compatibility matching.",
+  "requestFramePermissions": ["geolocation"]
+}
