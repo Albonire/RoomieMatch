@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Home from './pages/Home';
@@ -11,10 +11,35 @@ import SafetyMap from './pages/SafetyMap';
 import Auth from './pages/Auth';
 import Admin from './pages/Admin';
 import Avatar from './components/Avatar';
-import { LogOut, User, Map as MapIcon, Users, Home as HomeIcon, ShieldCheck, PlusCircle } from 'lucide-react';
+import { LogOut, User, Map as MapIcon, Users, Home as HomeIcon, ShieldCheck, PlusCircle, Sun, Moon } from 'lucide-react';
+
+/* ── Dark Mode Hook ── */
+function useDarkMode() {
+  const [dark, setDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('roomiematch-theme');
+      if (stored) return stored === 'dark';
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (dark) {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    localStorage.setItem('roomiematch-theme', dark ? 'dark' : 'light');
+  }, [dark]);
+
+  return [dark, () => setDark(d => !d)] as const;
+}
 
 const Navbar = () => {
   const { user, logout } = useAuth();
+  const [dark, toggleDark] = useDarkMode();
 
   return (
     <nav className="bg-editorial-bg/90 backdrop-blur-md border-b border-editorial-secondary sticky top-0 z-[1001]">
@@ -45,7 +70,16 @@ const Navbar = () => {
               )}
             </div>
           </div>
-          <div className="flex items-center space-x-8">
+          <div className="flex items-center space-x-6">
+            {/* Dark mode toggle */}
+            <button
+              onClick={toggleDark}
+              className="p-2 rounded-full border border-editorial-secondary/50 text-editorial-tertiary hover:text-editorial-ink hover:border-editorial-secondary transition-all cursor-pointer"
+              aria-label={dark ? 'Modo claro' : 'Modo oscuro'}
+            >
+              {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
+
             {user ? (
               <>
                 {user.email === 'admin@unipamplona.edu.co' && (

@@ -65,7 +65,7 @@ export default function Matching() {
           <h1 className="text-4xl md:text-5xl font-display font-medium text-editorial-ink tracking-tight leading-none mb-4">Compatibilidad</h1>
           <p className="font-sans text-editorial-tertiary text-lg">Encuentra a tu roommate ideal basado en tus preferencias</p>
         </div>
-        <div className="bg-white px-6 py-3 border border-editorial-secondary/60 shadow-editorial flex items-center space-x-3 rounded-sm">
+        <div className="bg-editorial-surface px-6 py-3 border border-editorial-secondary/60 shadow-editorial flex items-center space-x-3 rounded-sm">
           <Users className="w-5 h-5 text-editorial-accent" />
           <span className="font-display font-medium text-lg tracking-tight text-editorial-ink">{matches.length} Coincidencias</span>
         </div>
@@ -76,7 +76,7 @@ export default function Matching() {
           <div key={match.id} className="editorial-card overflow-hidden group">
             <div className="p-8 flex flex-col items-center text-center space-y-6">
               <div className="relative">
-                <div className="p-1 bg-white rounded-full shadow-sm border border-editorial-secondary/40">
+                <div className="p-1 bg-editorial-surface rounded-full shadow-sm border border-editorial-secondary/40">
                   <Avatar photoUrl={match.photo_url} className="w-24 h-24 rounded-full border-0" iconClassName="w-12 h-12" />
                 </div>
                 <div className="absolute -top-2 -right-2 bg-editorial-accent text-white w-12 h-12 rounded-full flex items-center justify-center font-sans font-medium text-sm shadow-sm">

@@ -141,8 +141,8 @@ export default function Profile() {
           <div className="flex flex-col md:flex-row md:items-start gap-6 mb-10">
             {/* Only the avatar gets the negative margin — text never enters the banner */}
             <div className="relative group flex-shrink-0 -mt-12">
-              <div className="p-1 bg-white rounded-full shadow-editorial-hover">
-                <Avatar photoUrl={form.photo_url} className="w-28 h-28 rounded-full border-2 border-white" iconClassName="w-14 h-14" />
+              <div className="p-1 bg-editorial-surface rounded-full shadow-editorial-hover">
+                <Avatar photoUrl={form.photo_url} className="w-28 h-28 rounded-full border-2 border-editorial-surface" iconClassName="w-14 h-14" />
               </div>
               <button 
                 type="button"

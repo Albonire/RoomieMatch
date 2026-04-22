@@ -153,7 +153,7 @@ export default function Home() {
                 referrerPolicy="no-referrer"
               />
               <div className="absolute top-4 left-4">
-                <span className={`editorial-tag backdrop-blur-md bg-white/90 ${getSafetyColor(listing.safety_level)}`}>
+                <span className={`editorial-tag backdrop-blur-md bg-editorial-surface/90 ${getSafetyColor(listing.safety_level)}`}>
                   {listing.zone_name}
                 </span>
               </div>

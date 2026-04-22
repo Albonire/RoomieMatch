@@ -96,8 +96,8 @@ export default function Admin() {
                       <div className="font-sans text-xs text-editorial-tertiary">{user.email}</div>
                     </td>
                     <td className="px-6 py-5 border-r border-editorial-secondary/20">
-                      <span className={`px-3 py-1 font-sans text-[10px] font-medium uppercase tracking-wider rounded-sm ${
-                        user.is_verified ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-editorial-secondary/20 text-editorial-tertiary border border-editorial-secondary/30'
+                      <span className={`editorial-tag ${
+                        user.is_verified ? 'bg-emerald-50 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-700/50' : 'bg-editorial-secondary/20 text-editorial-tertiary border border-editorial-secondary/30'
                       }`}>
                         {user.is_verified ? 'Verificado' : 'Pendiente'}
                       </span>
@@ -106,7 +106,7 @@ export default function Admin() {
                       <button
                         onClick={() => toggleVerify(user.id, user.is_verified)}
                         className={`font-sans text-[10px] font-medium uppercase tracking-wider px-3 py-1.5 border rounded-sm transition-all ${
-                          user.is_verified ? 'bg-rose-50 border-rose-200 text-rose-700 hover:bg-rose-100' : 'bg-editorial-accent/5 border-editorial-accent/20 text-editorial-accent hover:bg-editorial-accent/10'
+                          user.is_verified ? 'bg-rose-50 dark:bg-rose-900/40 border-rose-200 dark:border-rose-700/50 text-rose-700 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-rose-900/60' : 'bg-editorial-accent/5 border-editorial-accent/20 text-editorial-accent hover:bg-editorial-accent/10'
                         }`}
                       >
                         {user.is_verified ? 'Revocar' : 'Verificar'}

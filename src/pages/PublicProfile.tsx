@@ -58,10 +58,10 @@ export default function PublicProfile() {
         <div className="px-8 md:px-12 pb-12">
           <div className="relative -mt-20 mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-8">
             <div className="relative inline-block">
-              <div className="p-1 bg-white rounded-full shadow-editorial-hover">
+              <div className="p-1 bg-editorial-surface rounded-full shadow-editorial-hover">
                 <Avatar 
                   photoUrl={profile.photo_url} 
-                  className="w-36 h-36 md:w-44 md:h-44 rounded-full border-2 border-white" 
+                  className="w-36 h-36 md:w-44 md:h-44 rounded-full border-2 border-editorial-surface" 
                   iconClassName="w-16 h-16 md:w-20 md:h-20" 
                 />
               </div>

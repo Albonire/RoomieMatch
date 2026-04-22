@@ -46,7 +46,7 @@ export default function SafetyMap() {
           <h1 className="text-4xl md:text-5xl font-display font-medium text-editorial-ink tracking-tight leading-none mb-4">Mapa de Seguridad</h1>
           <p className="font-sans text-editorial-tertiary text-lg">Zonas de riesgo y seguridad estudiantil en Pamplona</p>
         </div>
-        <div className="flex flex-wrap gap-5 bg-white p-4 px-6 border border-editorial-secondary/60 shadow-editorial rounded-sm">
+        <div className="flex flex-wrap gap-5 bg-editorial-surface p-4 px-6 border border-editorial-secondary/60 shadow-editorial rounded-sm">
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
             <span className="font-sans text-[11px] font-medium text-editorial-tertiary">Seguro</span>
@@ -118,7 +118,7 @@ export default function SafetyMap() {
             })}
           </MapContainer>
           
-          <div className="absolute bottom-6 left-6 z-[1000] bg-white/90 backdrop-blur-sm p-5 border border-editorial-secondary/40 shadow-editorial max-w-xs hidden md:block rounded-sm">
+          <div className="absolute bottom-6 left-6 z-[1000] bg-editorial-surface/90 backdrop-blur-sm p-5 border border-editorial-secondary/40 shadow-editorial max-w-xs hidden md:block rounded-sm">
             <h4 className="font-display font-medium text-sm tracking-tight flex items-center mb-2">
               <Info className="w-4 h-4 mr-2 text-editorial-accent" /> Info Mapa
             </h4>
@@ -135,7 +135,7 @@ export default function SafetyMap() {
             </h3>
             <div className="space-y-3 overflow-y-auto pr-2 flex-1 max-h-[400px]">
               {zones.map(zone => (
-                <div key={zone.id} className="p-4 border border-editorial-secondary/30 bg-white hover:bg-editorial-bg transition-all cursor-pointer group rounded-sm">
+                <div key={zone.id} className="p-4 border border-editorial-secondary/30 bg-editorial-surface hover:bg-editorial-bg transition-all cursor-pointer group rounded-sm">
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-display font-medium text-sm tracking-tight group-hover:text-editorial-accent transition-colors">{zone.name}</span>
                     <div className={`w-3 h-3 rounded-full ${

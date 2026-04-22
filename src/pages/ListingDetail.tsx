@@ -118,9 +118,9 @@ export default function ListingDetail() {
 
   const getSafetyStyle = (level: string) => {
     switch (level) {
-      case 'green': return 'bg-emerald-50 text-emerald-800 border-emerald-200';
-      case 'yellow': return 'bg-amber-50 text-amber-800 border-amber-200';
-      case 'red': return 'bg-rose-50 text-rose-800 border-rose-200';
+      case 'green': return 'bg-emerald-50 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-700/50';
+      case 'yellow': return 'bg-amber-50 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-700/50';
+      case 'red': return 'bg-rose-50 dark:bg-rose-900/40 text-rose-800 dark:text-rose-300 border-rose-200 dark:border-rose-700/50';
       default: return 'bg-editorial-secondary/30 text-editorial-tertiary border-editorial-secondary';
     }
   };
