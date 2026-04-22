@@ -39,12 +39,12 @@ interface AvatarProps {
   iconClassName?: string;
 }
 
-export default function Avatar({ photoUrl, className = "w-10 h-10 border border-brutal-ink/10", iconClassName = "w-5 h-5" }: AvatarProps) {
+export default function Avatar({ photoUrl, className = "w-10 h-10 border border-editorial-secondary/40", iconClassName = "w-5 h-5" }: AvatarProps) {
   if (photoUrl?.startsWith('icon:')) {
     const iconId = photoUrl.split(':')[1];
     const Icon = AVATAR_ICONS[iconId] || UserIcon;
     return (
-      <div className={`${className} bg-brutal-bg flex items-center justify-center text-brutal-ink overflow-hidden`}>
+      <div className={`${className} bg-editorial-bg flex items-center justify-center text-editorial-ink overflow-hidden`}>
         <Icon className={iconClassName} />
       </div>
     );

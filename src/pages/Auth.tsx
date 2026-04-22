@@ -99,13 +99,13 @@ export default function Auth() {
 
   return (
     <div className="max-w-md mx-auto py-16">
-      <div className="brutal-card p-12 bg-white space-y-12">
-        <div className="text-center space-y-6">
-          <h1 className="text-4xl font-display font-medium tracking-tight leading-none">
+      <div className="editorial-card p-12 space-y-10">
+        <div className="text-center space-y-4">
+          <h1 className="text-4xl font-display font-medium tracking-tight leading-none text-editorial-ink">
             {isLogin ? 'Bienvenido' : 'Únete a la'} <br />
-            <span className="text-brutal-accent/60">Comunidad</span>
+            <span className="text-editorial-accent italic">Comunidad</span>
           </h1>
-          <p className="font-sans text-gray-400 text-sm">
+          <p className="font-sans text-editorial-tertiary text-sm">
             {isLogin ? 'Inicia sesión para continuar' : 'Crea una cuenta para comenzar'}
           </p>
         </div>
@@ -115,60 +115,60 @@ export default function Auth() {
             <>
               <div className="flex justify-center mb-8">
                 {form.photo_url ? (
-                  <div className="border border-brutal-ink/10 p-1.5 shadow-brutal">
-                    <Avatar photoUrl={form.photo_url} className="w-24 h-24 rounded-none" iconClassName="w-12 h-12" />
+                  <div className="p-1 border border-editorial-secondary rounded-full shadow-sm">
+                    <Avatar photoUrl={form.photo_url} className="w-24 h-24 rounded-full" iconClassName="w-12 h-12" />
                   </div>
                 ) : (
-                  <div className="w-24 h-24 border border-dashed border-brutal-ink/10 flex items-center justify-center font-mono text-[9px] text-gray-400 uppercase text-center p-4">
+                  <div className="w-24 h-24 border border-dashed border-editorial-secondary rounded-full flex items-center justify-center font-sans text-[11px] text-editorial-tertiary text-center p-4">
                     Sin Foto
                   </div>
                 )}
               </div>
               
               <div>
-                <label className="brutal-label">Nombre Completo</label>
+                <label className="editorial-label">Nombre Completo</label>
                 <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brutal-ink" />
+                  <User className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 text-editorial-tertiary" />
                   <input
                     type="text"
                     placeholder="Tu nombre"
                     required
                     value={form.name}
                     onChange={e => setForm({ ...form, name: e.target.value })}
-                    className="brutal-input pl-12"
+                    className="editorial-input pl-7"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="brutal-label">Universidad</label>
+                <label className="editorial-label">Universidad</label>
                 <div className="relative">
-                  <GraduationCap className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brutal-ink" />
+                  <GraduationCap className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 text-editorial-tertiary" />
                   <input
                     type="text"
                     placeholder="Nombre de la U"
                     required
                     value={form.university}
                     onChange={e => setForm({ ...form, university: e.target.value })}
-                    className="brutal-input pl-12"
+                    className="editorial-input pl-7"
                   />
                 </div>
               </div>
               
-              <div className="space-y-6">
-                <label className="brutal-label flex items-center">
-                  <ImageIcon className="w-3.5 h-3.5 mr-3 text-brutal-accent/40" /> Elige un Avatar
+              <div className="space-y-3">
+                <label className="editorial-label flex items-center">
+                  <ImageIcon className="w-3.5 h-3.5 mr-2 text-editorial-tertiary" /> Elige un Avatar
                 </label>
-                <div className="grid grid-cols-6 gap-3">
+                <div className="grid grid-cols-6 gap-2">
                   {AVATARS.map(avatar => (
                     <button
                       key={avatar.id}
                       type="button"
                       onClick={() => setForm({ ...form, photo_url: `icon:${avatar.id}` })}
-                      className={`p-2.5 border transition-all duration-300 ${
+                      className={`p-2 rounded-lg border transition-all duration-300 ${
                         form.photo_url === `icon:${avatar.id}` 
-                          ? 'border-brutal-accent/20 bg-brutal-accent/5 text-brutal-accent shadow-brutal -translate-x-[1px] -translate-y-[1px]' 
-                          : 'border-brutal-ink/5 hover:border-brutal-ink/20 text-gray-300 bg-white'
+                          ? 'border-editorial-accent bg-editorial-accent/5 text-editorial-accent shadow-sm scale-105' 
+                          : 'border-editorial-secondary/40 hover:border-editorial-secondary text-editorial-tertiary/40 bg-transparent'
                       }`}
                       title={avatar.label}
                     >
@@ -178,7 +178,7 @@ export default function Auth() {
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="p-2.5 border border-dashed border-brutal-ink/10 hover:border-brutal-ink/20 text-gray-300 hover:text-brutal-accent transition-all flex items-center justify-center"
+                    className="p-2 rounded-lg border border-dashed border-editorial-secondary/40 hover:border-editorial-accent text-editorial-tertiary/40 hover:text-editorial-accent transition-all flex items-center justify-center"
                     title="Subir Foto Local"
                   >
                     <Upload className="w-5 h-5" />
@@ -197,7 +197,7 @@ export default function Auth() {
                     placeholder="O pega una URL de imagen"
                     value={form.photo_url.startsWith('data:') || form.photo_url.startsWith('icon:') ? '' : form.photo_url}
                     onChange={e => setForm({ ...form, photo_url: e.target.value })}
-                    className="brutal-input text-xs"
+                    className="editorial-input text-xs"
                   />
                 </div>
               </div>
@@ -205,51 +205,51 @@ export default function Auth() {
           )}
 
           <div>
-            <label className="brutal-label">Correo Institucional (@unipamplona.edu.co)</label>
+            <label className="editorial-label">Correo Institucional (@unipamplona.edu.co)</label>
             <div className="relative">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brutal-ink" />
+              <Mail className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 text-editorial-tertiary" />
               <input
                 type="email"
                 placeholder="usuario@unipamplona.edu.co"
                 required
                 value={form.email}
                 onChange={e => setForm({ ...form, email: e.target.value })}
-                className="brutal-input pl-12"
+                className="editorial-input pl-7"
               />
             </div>
           </div>
 
           <div>
-            <label className="brutal-label">Contraseña</label>
+            <label className="editorial-label">Contraseña</label>
             <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brutal-ink" />
+              <Lock className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 text-editorial-tertiary" />
               <input
                 type="password"
                 placeholder="••••••••"
                 required
                 value={form.password}
                 onChange={e => setForm({ ...form, password: e.target.value })}
-                className="brutal-input pl-12"
+                className="editorial-input pl-7"
               />
             </div>
           </div>
 
           {error && (
-            <div className="p-4 bg-[#D5A2A2]/10 border border-[#D5A2A2]/20 text-[#8B5E5E] font-mono text-[9px] uppercase tracking-widest">
-              ERROR: {error}
+            <div className="p-4 bg-rose-50 border border-rose-200 text-rose-700 font-sans text-xs rounded-sm">
+              {error}
             </div>
           )}
 
-          <button type="submit" className="brutal-btn brutal-btn-primary w-full py-4 text-lg">
-            {isLogin ? <LogIn className="w-6 h-6 mr-3" /> : <UserPlus className="w-6 h-6 mr-3" />}
+          <button type="submit" className="editorial-btn editorial-btn-primary w-full py-3 text-base">
+            {isLogin ? <LogIn className="w-5 h-5 mr-2" /> : <UserPlus className="w-5 h-5 mr-2" />}
             {isLogin ? 'Entrar' : 'Registrar'}
           </button>
         </form>
 
-        <div className="text-center pt-8 border-t border-brutal-ink/5">
+        <div className="text-center pt-6 border-t border-editorial-secondary/40">
           <button
             onClick={() => setIsLogin(!isLogin)}
-            className="font-mono text-[9px] uppercase tracking-widest text-gray-400 hover:text-brutal-accent transition-colors"
+            className="font-sans text-xs text-editorial-tertiary hover:text-editorial-accent transition-colors"
           >
             {isLogin ? "¿No tienes cuenta? Regístrate aquí" : '¿Ya tienes cuenta? Inicia sesión'}
           </button>

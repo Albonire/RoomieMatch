@@ -67,57 +67,57 @@ export default function Home() {
 
   const getSafetyColor = (level: string) => {
     switch (level) {
-      case 'green': return 'bg-green-500 text-white border-green-600/20';
-      case 'yellow': return 'bg-yellow-400 text-white border-yellow-500/20';
-      case 'red': return 'bg-red-500 text-white border-red-600/20';
-      default: return 'bg-gray-200 border-gray-300 text-gray-600';
+      case 'green': return 'bg-emerald-50 text-emerald-800 border-emerald-200';
+      case 'yellow': return 'bg-amber-50 text-amber-800 border-amber-200';
+      case 'red': return 'bg-rose-50 text-rose-800 border-rose-200';
+      default: return 'bg-editorial-secondary/30 border-editorial-secondary text-editorial-tertiary';
     }
   };
 
   return (
     <div className="space-y-12">
-      <header className="mb-20">
-        <h1 className="text-5xl md:text-7xl font-display font-medium tracking-tight leading-[1.1] mb-8">
+      <header className="mb-20 max-w-4xl">
+        <h1 className="text-5xl md:text-7xl font-display font-medium tracking-tight leading-[1.05] mb-8 text-editorial-ink">
           Encuentra tu <br />
-          <span className="text-brutal-accent italic">Próximo Hogar</span>
+          <span className="text-editorial-accent italic">Próximo Hogar</span>
         </h1>
-        <p className="font-sans text-lg text-gray-500 max-w-2xl leading-relaxed">
+        <p className="font-sans text-lg text-editorial-tertiary max-w-2xl leading-relaxed">
           Explora habitaciones y apartamentos en las mejores zonas de Pamplona. 
           Seguridad verificada por la comunidad con un enfoque minimalista y funcional.
         </p>
       </header>
 
-      <div className="brutal-card p-8 bg-white">
+      <div className="editorial-card p-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <label className="brutal-label">Precio Mínimo</label>
+            <label className="editorial-label">Precio Mínimo</label>
             <input
               type="number"
               name="minPrice"
               placeholder="0"
               value={filters.minPrice}
               onChange={handleFilterChange}
-              className="brutal-input"
+              className="editorial-input px-0"
             />
           </div>
           <div>
-            <label className="brutal-label">Precio Máximo</label>
+            <label className="editorial-label">Precio Máximo</label>
             <input
               type="number"
               name="maxPrice"
               placeholder="Cualquiera"
               value={filters.maxPrice}
               onChange={handleFilterChange}
-              className="brutal-input"
+              className="editorial-input px-0"
             />
           </div>
           <div>
-            <label className="brutal-label">Zona</label>
+            <label className="editorial-label">Zona</label>
             <select
               name="zoneId"
               value={filters.zoneId}
               onChange={handleFilterChange}
-              className="brutal-input appearance-none"
+              className="editorial-input px-0 appearance-none bg-transparent"
             >
               <option value="">Todas las Zonas</option>
               {zones.map(z => (
@@ -126,13 +126,13 @@ export default function Home() {
             </select>
           </div>
           <div>
-            <label className="brutal-label">Disponible Desde</label>
+            <label className="editorial-label">Disponible Desde</label>
             <input
               type="date"
               name="date"
               value={filters.date}
               onChange={handleFilterChange}
-              className="brutal-input"
+              className="editorial-input px-0 text-editorial-tertiary"
             />
           </div>
         </div>
@@ -143,45 +143,45 @@ export default function Home() {
           <Link
             key={listing.id}
             to={`/listing/${listing.id}`}
-            className="group brutal-card brutal-card-interactive overflow-hidden bg-white flex flex-col"
+            className="group editorial-card editorial-card-interactive flex flex-col"
           >
-            <div className="relative aspect-[4/3] overflow-hidden border-b border-brutal-ink/10">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-t-sm">
               <img
                 src={listing.photos[0] || 'https://picsum.photos/seed/room/800/600'}
                 alt={listing.title}
-                className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 referrerPolicy="no-referrer"
               />
               <div className="absolute top-4 left-4">
-                <span className={`px-3 py-1 border font-mono text-[9px] font-medium uppercase tracking-[0.15em] shadow-brutal ${getSafetyColor(listing.safety_level)}`}>
+                <span className={`editorial-tag backdrop-blur-md bg-white/90 ${getSafetyColor(listing.safety_level)}`}>
                   {listing.zone_name}
                 </span>
               </div>
-              <div className="absolute bottom-4 right-4 bg-brutal-accent text-white px-4 py-1.5 font-display font-medium text-xs tracking-widest uppercase shadow-brutal">
+              <div className="absolute bottom-4 right-4 bg-editorial-bg text-editorial-ink px-3 py-1.5 font-sans font-medium text-xs tracking-wide shadow-sm rounded-sm">
                 ${listing.price.toLocaleString()}
               </div>
             </div>
-            <div className="p-8 flex-1 flex flex-col space-y-6">
-              <h3 className="text-xl font-display font-medium leading-tight group-hover:text-brutal-accent transition-colors">
+            <div className="p-6 flex-1 flex flex-col space-y-4">
+              <h3 className="text-2xl font-display font-medium leading-tight group-hover:text-editorial-accent transition-colors text-editorial-ink">
                 {listing.title}
               </h3>
-              <div className="flex items-center text-[10px] font-mono uppercase tracking-widest text-gray-400">
-                <MapPin className="w-3 h-3 mr-2 text-brutal-accent/60" />
+              <div className="flex items-center text-[11px] font-sans text-editorial-tertiary">
+                <MapPin className="w-3.5 h-3.5 mr-2 text-editorial-tertiary/70" />
                 <span className="line-clamp-1">{listing.address}</span>
               </div>
-              <div className="pt-6 border-t border-brutal-ink/5 flex items-center justify-between mt-auto">
-                <div className="flex items-center space-x-6 font-mono text-[9px] uppercase tracking-widest text-gray-400">
+              <div className="pt-6 border-t border-editorial-secondary/40 flex items-center justify-between mt-auto">
+                <div className="flex items-center space-x-5 font-sans text-[11px] text-editorial-tertiary">
                   <div className="flex items-center">
-                    <Users className="w-3 h-3 mr-2 text-brutal-ink/20" />
+                    <Users className="w-3.5 h-3.5 mr-1.5 text-editorial-tertiary/60" />
                     {listing.max_occupants}
                   </div>
                   <div className="flex items-center">
-                    <Calendar className="w-3 h-3 mr-2 text-brutal-ink/20" />
+                    <Calendar className="w-3.5 h-3.5 mr-1.5 text-editorial-tertiary/60" />
                     {new Date(listing.available_from).toLocaleDateString()}
                   </div>
                 </div>
-                <div className="flex items-center text-brutal-accent font-bold text-xs tracking-widest">
-                  <Star className="w-3 h-3 mr-1.5 fill-current" />
+                <div className="flex items-center text-editorial-accent font-sans font-medium text-[11px] tracking-wide">
+                  <Star className="w-3.5 h-3.5 mr-1 fill-current" />
                   {listing.avg_rating ? listing.avg_rating.toFixed(1) : 'NEW'}
                 </div>
               </div>
@@ -190,8 +190,8 @@ export default function Home() {
         ))}
       </div>
       {listings.length === 0 && (
-        <div className="text-center py-32 brutal-card bg-white/50 border-dashed">
-          <p className="font-mono text-gray-500 uppercase tracking-widest">No se encontraron publicaciones.</p>
+        <div className="text-center py-32 editorial-card bg-editorial-bg/50 border-dashed">
+          <p className="font-sans text-editorial-tertiary">No se encontraron publicaciones.</p>
         </div>
       )}
     </div>

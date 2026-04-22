@@ -89,52 +89,52 @@ export default function CreateListing() {
 
   return (
     <div className="max-w-3xl mx-auto py-16">
-      <div className="brutal-card bg-white p-16 space-y-16">
-        <div className="text-center space-y-6 border-b border-brutal-ink/5 pb-12">
-          <h1 className="text-4xl md:text-5xl font-display font-medium text-brutal-ink tracking-tight leading-none">Publicar Habitación</h1>
-          <p className="font-sans text-gray-400 text-lg">Comparte tu espacio con otros estudiantes</p>
+      <div className="editorial-card p-12 md:p-16 space-y-14">
+        <div className="text-center space-y-4 border-b border-editorial-secondary/40 pb-10">
+          <h1 className="text-4xl md:text-5xl font-display font-medium text-editorial-ink tracking-tight leading-none">Publicar Habitación</h1>
+          <p className="font-sans text-editorial-tertiary text-lg">Comparte tu espacio con otros estudiantes</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-10">
           <div className="space-y-8">
             <div>
-              <label className="brutal-label">Título de la Publicación</label>
+              <label className="editorial-label">Título de la Publicación</label>
               <div className="relative">
-                <Home className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brutal-accent/40" />
+                <Home className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 text-editorial-tertiary" />
                 <input
                   type="text"
                   placeholder="Ej: Habitación amplia cerca al campus"
                   required
                   value={form.title}
                   onChange={e => setForm({ ...form, title: e.target.value })}
-                  className="brutal-input pl-12"
+                  className="editorial-input pl-7"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <label className="brutal-label">Precio Mensual (COP)</label>
+                <label className="editorial-label">Precio Mensual (COP)</label>
                 <div className="relative">
-                  <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brutal-accent/40" />
+                  <DollarSign className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 text-editorial-tertiary" />
                   <input
                     type="number"
                     placeholder="400000"
                     required
                     value={form.price}
                     onChange={e => setForm({ ...form, price: e.target.value })}
-                    className="brutal-input pl-12"
+                    className="editorial-input pl-7"
                   />
                 </div>
               </div>
               <div>
-                <label className="brutal-label">Zona de Pamplona</label>
+                <label className="editorial-label">Zona de Pamplona</label>
                 <div className="relative">
-                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brutal-accent/40" />
+                  <MapPin className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 text-editorial-tertiary" />
                   <select
                     value={form.zone_id}
                     onChange={e => setForm({ ...form, zone_id: e.target.value })}
-                    className="brutal-input pl-12 appearance-none"
+                    className="editorial-input pl-7 appearance-none bg-transparent"
                   >
                     {zones.map(z => (
                       <option key={z.id} value={z.id}>{z.name}</option>
@@ -145,115 +145,115 @@ export default function CreateListing() {
             </div>
 
             <div>
-              <label className="brutal-label">Dirección Exacta</label>
+              <label className="editorial-label">Dirección Exacta</label>
               <div className="relative">
-                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brutal-accent/40" />
+                <MapPin className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 text-editorial-tertiary" />
                 <input
                   type="text"
                   placeholder="Ej: Calle 5 #4-20"
                   required
                   value={form.address}
                   onChange={e => setForm({ ...form, address: e.target.value })}
-                  className="brutal-input pl-12"
+                  className="editorial-input pl-7"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <label className="brutal-label">Disponible Desde</label>
+                <label className="editorial-label">Disponible Desde</label>
                 <div className="relative">
-                  <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brutal-accent/40" />
+                  <Calendar className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 text-editorial-tertiary" />
                   <input
                     type="date"
                     required
                     value={form.available_from}
                     onChange={e => setForm({ ...form, available_from: e.target.value })}
-                    className="brutal-input pl-12"
+                    className="editorial-input pl-7"
                   />
                 </div>
               </div>
               <div>
-                <label className="brutal-label">Ocupantes Máximos</label>
+                <label className="editorial-label">Ocupantes Máximos</label>
                 <div className="relative">
-                  <Users className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brutal-accent/40" />
+                  <Users className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 text-editorial-tertiary" />
                   <input
                     type="number"
                     min="1"
                     required
                     value={form.max_occupants}
                     onChange={e => setForm({ ...form, max_occupants: e.target.value })}
-                    className="brutal-input pl-12"
+                    className="editorial-input pl-7"
                   />
                 </div>
               </div>
             </div>
 
             <div>
-              <label className="brutal-label">Descripción</label>
+              <label className="editorial-label">Descripción</label>
               <div className="relative">
-                <FileText className="absolute left-4 top-4 w-5 h-5 text-brutal-accent/40" />
+                <FileText className="absolute left-0 top-4 w-4 h-4 text-editorial-tertiary" />
                 <textarea
                   placeholder="Describe la habitación, servicios incluidos, etc."
                   required
                   value={form.description}
                   onChange={e => setForm({ ...form, description: e.target.value })}
-                  className="brutal-input pl-12 min-h-[120px]"
+                  className="editorial-input pl-7 min-h-[120px] border border-editorial-secondary rounded-sm p-4"
                   rows={3}
                 />
               </div>
             </div>
 
             <div>
-              <label className="brutal-label">Reglas de la Casa</label>
+              <label className="editorial-label">Reglas de la Casa</label>
               <div className="relative">
-                <FileText className="absolute left-4 top-4 w-5 h-5 text-brutal-accent/40" />
+                <FileText className="absolute left-0 top-4 w-4 h-4 text-editorial-tertiary" />
                 <textarea
                   placeholder="Ej: No fumar, no mascotas, etc."
                   value={form.rules}
                   onChange={e => setForm({ ...form, rules: e.target.value })}
-                  className="brutal-input pl-12 min-h-[80px]"
+                  className="editorial-input pl-7 min-h-[80px] border border-editorial-secondary rounded-sm p-4"
                   rows={2}
                 />
               </div>
             </div>
 
             <div>
-              <label className="brutal-label">Ubicación en el Mapa (Haz clic para marcar)</label>
-              <div className="h-[300px] border-4 border-brutal-ink shadow-brutal overflow-hidden">
+              <label className="editorial-label">Ubicación en el Mapa (Haz clic para marcar)</label>
+              <div className="h-[300px] editorial-card overflow-hidden">
                 <MapContainer center={[7.3755, -72.6455]} zoom={14} style={{ height: '100%', width: '100%' }}>
                   <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                   <LocationPicker position={position} setPosition={setPosition} />
                 </MapContainer>
               </div>
-              <p className="mt-2 font-mono text-[10px] text-gray-400 uppercase tracking-tighter">
-                Lat: {position[0].toFixed(6)} | Lng: {position[1].toFixed(6)}
+              <p className="mt-2 font-sans text-[11px] text-editorial-tertiary">
+                Lat: {position[0].toFixed(6)} · Lng: {position[1].toFixed(6)}
               </p>
             </div>
 
             <div>
-              <label className="brutal-label">URLs de Fotos (separadas por coma)</label>
+              <label className="editorial-label">URLs de Fotos (separadas por coma)</label>
               <div className="relative">
-                <Camera className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brutal-accent/40" />
+                <Camera className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 text-editorial-tertiary" />
                 <input
                   type="text"
                   placeholder="https://ejemplo.com/foto1.jpg, https://ejemplo.com/foto2.jpg"
                   value={form.photos}
                   onChange={e => setForm({ ...form, photos: e.target.value })}
-                  className="brutal-input pl-12"
+                  className="editorial-input pl-7"
                 />
               </div>
             </div>
           </div>
 
           {error && (
-            <div className="p-4 bg-[#D5A2A2]/10 border border-[#D5A2A2]/20 text-[#8B5E5E] font-mono text-[9px] uppercase tracking-widest shadow-brutal">
+            <div className="p-4 bg-rose-50 border border-rose-200 text-rose-700 font-sans text-xs rounded-sm">
               {error}
             </div>
           )}
 
-          <button type="submit" className="brutal-btn brutal-btn-primary w-full py-6 text-xl">
-            <Save className="w-6 h-6 mr-3" /> Publicar Habitación
+          <button type="submit" className="editorial-btn editorial-btn-primary w-full py-4 text-base">
+            <Save className="w-5 h-5 mr-2" /> Publicar Habitación
           </button>
         </form>
       </div>

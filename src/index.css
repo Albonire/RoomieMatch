@@ -1,70 +1,83 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,300;1,6..72,400;1,6..72,500&display=swap');
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Cormorant Garamond", serif;
+  --font-display: "Newsreader", serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
-  --color-brutal-bg: #F2F0E9;
-  --color-brutal-ink: #1A1A1A;
-  --color-brutal-accent: #8C4B3E;
-  --color-brutal-secondary: #3E4C3E;
+  --color-editorial-bg: #F9F7F1;
+  --color-editorial-ink: #111111;
+  --color-editorial-accent: #1D3557;
+  --color-editorial-secondary: #E3E0D8;
+  --color-editorial-tertiary: #8D8C8A;
   
-  --shadow-brutal: 6px 6px 0px 0px rgba(26, 26, 26, 0.08);
-  --shadow-brutal-hover: 3px 3px 0px 0px rgba(26, 26, 26, 0.12);
+  --shadow-editorial: 0 4px 20px -2px rgba(17, 17, 17, 0.04);
+  --shadow-editorial-hover: 0 12px 30px -4px rgba(17, 17, 17, 0.08);
 }
 
 ::selection {
-  background-color: #8C4B3E;
-  color: #F2F0E9;
+  background-color: #1D3557;
+  color: #F9F7F1;
 }
 
 * {
-  transition: border-color 0.3s ease, background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+  transition: border-color 0.4s ease, background-color 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s ease;
 }
 
 @layer base {
   body {
-    @apply bg-brutal-bg text-brutal-ink font-sans antialiased;
+    @apply bg-editorial-bg text-editorial-ink font-sans antialiased leading-relaxed;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display font-medium tracking-tight;
+    @apply font-display tracking-tight text-editorial-ink;
   }
 }
 
 @layer components {
-  .brutal-card {
-    @apply bg-white border border-brutal-ink/20 shadow-brutal transition-all duration-300;
+  .editorial-card {
+    @apply bg-white border border-editorial-secondary/60 shadow-editorial transition-all duration-500;
   }
   
-  .brutal-card-interactive {
-    @apply cursor-pointer hover:border-brutal-ink/40;
+  .editorial-card-interactive {
+    @apply cursor-pointer hover:border-editorial-accent/30 hover:shadow-editorial-hover hover:-translate-y-1;
   }
 
-  .brutal-card-interactive:hover {
-    @apply translate-x-[1px] translate-y-[1px] shadow-brutal-hover;
+  .editorial-btn {
+    @apply px-6 py-2.5 bg-transparent border border-editorial-secondary font-sans font-medium tracking-wide transition-all duration-300 active:scale-[0.98] cursor-pointer inline-flex items-center justify-center text-sm text-editorial-ink;
+  }
+  
+  .editorial-btn:hover {
+    @apply border-editorial-ink/30 bg-editorial-secondary/20;
   }
 
-  .brutal-btn {
-    @apply px-8 py-3 bg-white border border-brutal-ink/20 font-display font-medium uppercase tracking-widest shadow-brutal transition-all duration-300 active:translate-x-[1px] active:translate-y-[1px] active:shadow-brutal-hover cursor-pointer inline-flex items-center justify-center text-sm;
+  .editorial-btn-primary {
+    @apply bg-editorial-ink text-editorial-bg border-editorial-ink shadow-editorial;
   }
 
-  .brutal-btn-primary {
-    @apply bg-brutal-accent text-white border-brutal-accent/20;
+  .editorial-btn-primary:hover {
+    @apply bg-editorial-ink/90 text-white border-editorial-ink/90 bg-editorial-ink/90;
   }
 
-  .brutal-btn-primary:hover {
-    @apply bg-brutal-accent/90;
+  .editorial-btn-accent {
+    @apply bg-editorial-accent text-white border-editorial-accent shadow-editorial;
   }
 
-  .brutal-input {
-    @apply w-full px-4 py-4 bg-white border border-brutal-ink/10 font-sans focus:outline-none focus:ring-0 focus:border-brutal-accent/40 focus:bg-brutal-bg/50 transition-all;
+  .editorial-btn-accent:hover {
+    @apply bg-editorial-accent/90 border-editorial-accent/90;
   }
 
-  .brutal-label {
-    @apply font-mono text-[9px] uppercase tracking-[0.2em] text-gray-400 mb-2 block;
+  .editorial-input {
+    @apply w-full px-4 py-3 bg-transparent border-b border-editorial-secondary font-sans focus:outline-none focus:ring-0 focus:border-editorial-accent transition-colors rounded-none text-editorial-ink;
+  }
+
+  .editorial-label {
+    @apply font-sans text-[11px] font-medium uppercase tracking-[0.1em] text-editorial-tertiary mb-1 block;
+  }
+  
+  .editorial-tag {
+    @apply px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider border flex items-center;
   }
 }

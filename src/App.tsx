@@ -17,57 +17,57 @@ const Navbar = () => {
   const { user, logout } = useAuth();
 
   return (
-    <nav className="bg-white border-b-4 border-brutal-ink sticky top-0 z-[1001]">
+    <nav className="bg-editorial-bg/90 backdrop-blur-md border-b border-editorial-secondary sticky top-0 z-[1001]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+        <div className="flex justify-between h-20 items-center">
           <div className="flex items-center">
             <Link to="/" className="flex-shrink-0 flex items-center group">
-              <span className="text-2xl font-display font-bold text-brutal-ink tracking-tighter group-hover:bg-brutal-accent transition-all px-1 hover:text-white">
-                Roomie<span className="text-brutal-secondary group-hover:text-brutal-ink">Match</span>
+              <span className="text-3xl font-display font-medium text-editorial-ink tracking-tight transition-colors group-hover:text-editorial-accent">
+                Roomie<span className="italic">Match</span>
               </span>
             </Link>
-            <div className="hidden lg:ml-10 lg:flex lg:space-x-8">
-              <Link to="/" className="inline-flex items-center px-1 pt-1 text-[10px] font-display font-bold uppercase tracking-widest text-brutal-ink hover:bg-brutal-accent transition-all border-b-2 border-transparent hover:border-brutal-ink hover:text-white">
+            <div className="hidden lg:ml-12 lg:flex lg:space-x-8">
+              <Link to="/" className="inline-flex items-center text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-editorial-tertiary hover:text-editorial-ink transition-colors">
                 Publicaciones
               </Link>
-              <Link to="/map" className="inline-flex items-center px-1 pt-1 text-[10px] font-display font-bold uppercase tracking-widest text-brutal-ink/40 hover:bg-brutal-tertiary hover:text-black transition-all border-b-2 border-transparent hover:border-brutal-ink">
+              <Link to="/map" className="inline-flex items-center text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-editorial-tertiary hover:text-editorial-ink transition-colors">
                 Mapa
               </Link>
               {user && (
                 <>
-                  <Link to="/matching" className="inline-flex items-center px-1 pt-1 text-[10px] font-display font-bold uppercase tracking-widest text-brutal-ink/40 hover:bg-brutal-secondary hover:text-white transition-all border-b-2 border-transparent hover:border-brutal-ink">
+                  <Link to="/matching" className="inline-flex items-center text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-editorial-tertiary hover:text-editorial-ink transition-colors">
                     Roommates
                   </Link>
-                  <Link to="/create-listing" className="inline-flex items-center px-1 pt-1 text-[10px] font-display font-bold uppercase tracking-widest text-brutal-ink/40 hover:bg-brutal-accent transition-all border-b-2 border-transparent hover:border-brutal-ink">
+                  <Link to="/create-listing" className="inline-flex items-center text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-editorial-accent hover:text-editorial-ink transition-colors">
                     Publicar
                   </Link>
                 </>
               )}
             </div>
           </div>
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-8">
             {user ? (
               <>
                 {user.email === 'admin@unipamplona.edu.co' && (
-                  <Link to="/admin" className="text-brutal-ink hover:text-brutal-tertiary transition-all hover:scale-125">
-                    <ShieldCheck className="w-5 h-5" />
+                  <Link to="/admin" className="text-editorial-tertiary hover:text-editorial-ink transition-colors">
+                    <ShieldCheck className="w-5 h-5 stroke-[1.5]" />
                   </Link>
                 )}
-                <Link to="/profile" className="flex items-center group">
-                  <div className="border-2 border-brutal-ink p-0.5 shadow-brutal group-hover:shadow-[2px_2px_0px_0px_#FF00FF] group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 transition-all bg-white">
-                    <Avatar photoUrl={user.photo_url} className="w-8 h-8 border-0" iconClassName="w-4 h-4" />
+                <Link to="/profile" className="flex items-center group space-x-3">
+                  <div className="text-right hidden md:block">
+                    <div className="font-display font-medium text-sm text-editorial-ink leading-none">{user.name}</div>
+                    <div className="font-sans text-[9px] uppercase tracking-[0.15em] text-editorial-tertiary mt-1">Mi Perfil</div>
                   </div>
-                  <div className="hidden md:flex flex-col ml-3">
-                    <span className="font-display font-bold text-xs tracking-tighter text-brutal-ink leading-none uppercase bg-brutal-accent px-1">{user.name}</span>
-                    <span className="font-mono text-[7px] font-bold uppercase tracking-widest text-brutal-secondary mt-0.5">Mi Perfil</span>
+                  <div className="p-0.5 rounded-full border border-transparent group-hover:border-editorial-secondary transition-colors">
+                    <Avatar photoUrl={user.photo_url} className="w-9 h-9 border border-editorial-secondary shadow-sm" iconClassName="w-4 h-4" />
                   </div>
                 </Link>
-                <button onClick={logout} className="text-brutal-ink hover:text-brutal-tertiary cursor-pointer transition-all hover:rotate-45">
-                  <LogOut className="w-5 h-5" />
+                <button onClick={logout} className="text-editorial-tertiary hover:text-editorial-accent transition-colors cursor-pointer">
+                  <LogOut className="w-5 h-5 stroke-[1.5]" />
                 </button>
               </>
             ) : (
-              <Link to="/auth" className="brutal-btn brutal-btn-primary px-6 py-1.5 text-sm">
+              <Link to="/auth" className="editorial-btn editorial-btn-primary">
                 Entrar
               </Link>
             )}
@@ -81,10 +81,10 @@ const Navbar = () => {
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
   if (loading) return (
-    <div className="flex items-center justify-center min-h-screen bg-brutal-accent">
-      <div className="brutal-card bg-white p-24 flex flex-col items-center space-y-12 shadow-[20px_20px_0px_0px_#000000]">
-        <div className="w-24 h-24 border-8 border-brutal-ink border-t-brutal-tertiary animate-spin"></div>
-        <div className="font-display font-bold text-5xl tracking-tighter text-brutal-ink uppercase animate-pulse">Cargando...</div>
+    <div className="flex items-center justify-center min-h-screen bg-editorial-bg">
+      <div className="flex flex-col items-center space-y-8 opacity-70">
+        <div className="w-12 h-12 border-2 border-editorial-secondary border-t-editorial-ink rounded-full animate-spin"></div>
+        <div className="font-display font-medium text-2xl tracking-tight text-editorial-ink italic">Cargando...</div>
       </div>
     </div>
   );
@@ -96,9 +96,9 @@ export default function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen bg-brutal-bg font-sans selection:bg-brutal-accent selection:text-white">
+        <div className="min-h-screen bg-editorial-bg font-sans selection:bg-editorial-accent selection:text-white flex flex-col">
           <Navbar />
-          <main className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+          <main className="flex-grow w-full max-w-6xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/listing/:id" element={<ListingDetail />} />

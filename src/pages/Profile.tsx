@@ -119,28 +119,38 @@ export default function Profile() {
     );
   };
 
-  if (!profile) return <div>Cargando...</div>;
+  if (!profile) return (
+    <div className="flex items-center justify-center py-32">
+      <div className="flex flex-col items-center space-y-4 opacity-60">
+        <div className="w-10 h-10 border-2 border-editorial-secondary border-t-editorial-ink rounded-full animate-spin"></div>
+        <span className="font-display text-lg italic text-editorial-tertiary">Cargando...</span>
+      </div>
+    </div>
+  );
 
   return (
     <div className="max-w-4xl mx-auto space-y-12">
-      <div className="brutal-card bg-white overflow-hidden shadow-[20px_20px_0px_0px_#000000]">
-        <div className="h-64 bg-brutal-ink flex items-center justify-center overflow-hidden relative border-b-8 border-brutal-ink">
-          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#FFFF00_2px,transparent_2px)] [background-size:32px_32px] animate-pulse"></div>
-          <h1 className="text-7xl md:text-9xl font-display font-black text-white tracking-tighter z-10 uppercase transform -rotate-2">Tu Perfil</h1>
+      <div className="editorial-card overflow-hidden">
+        {/* Header banner — only decorative, no text on it */}
+        <div className="h-40 bg-editorial-accent overflow-hidden relative">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.08)_0%,transparent_60%)]"></div>
+          <h1 className="absolute inset-0 flex items-center justify-center text-5xl md:text-7xl font-display font-medium text-white/20 tracking-tight italic select-none">Tu Perfil</h1>
         </div>
-        <div className="px-12 pb-16">
-          <div className="relative -mt-32 mb-16 flex flex-col md:flex-row items-center md:items-end gap-12">
-            <div className="relative group">
-              <div className="border-8 border-brutal-ink p-2 shadow-[12px_12px_0px_0px_#FF00FF] bg-white transform group-hover:scale-105 transition-all">
-                <Avatar photoUrl={form.photo_url} className="w-48 h-48 border-0" iconClassName="w-24 h-24" />
+        <div className="px-8 md:px-12 pb-12">
+          {/* Row: avatar overlaps banner with negative margin only on itself; text is always in white space */}
+          <div className="flex flex-col md:flex-row md:items-start gap-6 mb-10">
+            {/* Only the avatar gets the negative margin — text never enters the banner */}
+            <div className="relative group flex-shrink-0 -mt-12">
+              <div className="p-1 bg-white rounded-full shadow-editorial-hover">
+                <Avatar photoUrl={form.photo_url} className="w-28 h-28 rounded-full border-2 border-white" iconClassName="w-14 h-14" />
               </div>
               <button 
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="absolute inset-0 bg-brutal-accent/80 backdrop-blur-[4px] opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-brutal-ink font-mono text-[12px] font-black uppercase tracking-widest cursor-pointer"
+                className="absolute inset-0 bg-editorial-ink/60 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white font-sans text-[11px] font-medium uppercase tracking-wider cursor-pointer"
               >
-                <Upload className="w-12 h-12 mb-4" />
-                Cambiar Foto
+                <Upload className="w-7 h-7 mb-1" />
+                Cambiar
               </button>
               <input 
                 type="file" 
@@ -150,43 +160,44 @@ export default function Profile() {
                 accept="image/*"
               />
             </div>
-            <div className="text-center md:text-left pb-8 space-y-4">
-              <h2 className="text-5xl md:text-7xl font-display font-black tracking-tighter leading-none uppercase bg-brutal-accent px-4 py-1 inline-block">{form.name}</h2>
-              <p className="font-sans text-brutal-ink/60 text-2xl font-bold uppercase tracking-tight">{form.university}</p>
+            {/* Text always stays in white area — mt-4 gives breathing room from banner bottom */}
+            <div className="mt-4 space-y-1.5">
+              <h2 className="text-3xl md:text-4xl font-display font-medium tracking-tight leading-none text-editorial-ink">{form.name}</h2>
+              <p className="font-sans text-editorial-tertiary">{form.university}</p>
               {profile.is_verified === 1 && (
-                <div className="inline-flex items-center bg-brutal-secondary text-white px-6 py-2 font-mono text-[11px] font-black uppercase tracking-widest shadow-[6px_6px_0px_0px_#000000] transform rotate-1">
-                  <CheckCircle className="w-5 h-5 mr-3" /> Verificado
+                <div className="inline-flex items-center bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-sm font-sans text-[11px] font-medium uppercase tracking-wider mt-1">
+                  <CheckCircle className="w-3.5 h-3.5 mr-1.5" /> Verificado
                 </div>
               )}
             </div>
           </div>
           
-          <form onSubmit={handleSave} className="space-y-16">
-            <div className="space-y-10">
-              <div className="space-y-8">
-                <label className="brutal-label flex items-center">
-                  <ImageIcon className="w-3.5 h-3.5 mr-3 text-brutal-accent/40" /> Elige un Avatar o Sube una Foto
+          <form onSubmit={handleSave} className="space-y-14">
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <label className="editorial-label flex items-center">
+                  <ImageIcon className="w-3.5 h-3.5 mr-2 text-editorial-tertiary" /> Elige un Avatar o Sube una Foto
                 </label>
-                <div className="grid grid-cols-6 md:grid-cols-11 gap-4">
+                <div className="grid grid-cols-6 md:grid-cols-11 gap-2">
                   {AVATARS.map(avatar => (
                     <button
                       key={avatar.id}
                       type="button"
                       onClick={() => setForm({ ...form, photo_url: `icon:${avatar.id}` })}
-                      className={`p-4 border-4 transition-all duration-200 ${
+                      className={`p-3 rounded-lg border transition-all duration-300 ${
                         form.photo_url === `icon:${avatar.id}` 
-                          ? 'border-brutal-ink bg-brutal-accent text-brutal-ink shadow-[6px_6px_0px_0px_#0000FF] -translate-x-1 -translate-y-1' 
-                          : 'border-brutal-ink/10 hover:border-brutal-ink/40 text-brutal-ink/20 bg-white'
+                          ? 'border-editorial-accent bg-editorial-accent/5 text-editorial-accent shadow-sm scale-105' 
+                          : 'border-editorial-secondary/40 hover:border-editorial-secondary text-editorial-tertiary/30 bg-transparent'
                       }`}
                       title={avatar.label}
                     >
-                      <avatar.icon className="w-8 h-8 mx-auto" />
+                      <avatar.icon className="w-6 h-6 mx-auto" />
                     </button>
                   ))}
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="p-3 border border-dashed border-brutal-ink/10 hover:border-brutal-ink/20 text-gray-300 hover:text-brutal-accent transition-all flex items-center justify-center"
+                    className="p-3 rounded-lg border border-dashed border-editorial-secondary/40 hover:border-editorial-accent text-editorial-tertiary/30 hover:text-editorial-accent transition-all flex items-center justify-center"
                   >
                     <Upload className="w-6 h-6" />
                   </button>
@@ -195,67 +206,67 @@ export default function Profile() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <label className="brutal-label">Nombre Completo</label>
+                  <label className="editorial-label">Nombre Completo</label>
                   <input
                     type="text"
                     value={form.name}
                     onChange={e => setForm({ ...form, name: e.target.value })}
-                    className="brutal-input"
+                    className="editorial-input"
                   />
                 </div>
                 <div>
-                  <label className="brutal-label">Universidad</label>
+                  <label className="editorial-label">Universidad</label>
                   <input
                     type="text"
                     value={form.university}
                     onChange={e => setForm({ ...form, university: e.target.value })}
-                    className="brutal-input"
+                    className="editorial-input"
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="brutal-label">URL de la Foto (Opcional)</label>
+                  <label className="editorial-label">URL de la Foto (Opcional)</label>
                   <input
                     type="text"
                     value={form.photo_url.startsWith('data:') || form.photo_url.startsWith('icon:') ? '' : form.photo_url}
                     onChange={e => setForm({ ...form, photo_url: e.target.value })}
                     placeholder="https://..."
-                    className="brutal-input"
+                    className="editorial-input"
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="brutal-label">Biografía</label>
+                  <label className="editorial-label">Biografía</label>
                   <textarea
                     value={form.bio}
                     onChange={e => setForm({ ...form, bio: e.target.value })}
-                    className="brutal-input min-h-[120px]"
+                    className="editorial-input min-h-[120px] border border-editorial-secondary rounded-sm p-4"
                     rows={3}
                   />
                 </div>
               </div>
             </div>
 
-            <div className="pt-20 border-t-8 border-brutal-ink">
-              <h3 className="text-5xl font-display font-black text-brutal-ink mb-12 flex items-center tracking-tighter uppercase">
-                <Heart className="w-12 h-12 mr-5 text-brutal-tertiary" /> Compatibilidad
+            <div className="pt-12 border-t border-editorial-secondary/40">
+              <h3 className="text-3xl font-display font-medium text-editorial-ink mb-8 flex items-center tracking-tight">
+                <Heart className="w-7 h-7 mr-4 text-editorial-accent" /> Compatibilidad
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div>
-                  <label className="brutal-label flex items-center"><Coffee className="w-4 h-4 mr-3 text-brutal-secondary" /> Horario</label>
+                  <label className="editorial-label flex items-center"><Coffee className="w-3.5 h-3.5 mr-2 text-editorial-tertiary" /> Horario</label>
                   <select
                     value={form.compatibility_form.schedule}
                     onChange={e => setForm({ ...form, compatibility_form: { ...form.compatibility_form, schedule: e.target.value } })}
-                    className="brutal-input appearance-none bg-brutal-accent/5"
+                    className="editorial-input appearance-none bg-transparent"
                   >
                     <option value="morning">Persona Mañanera</option>
                     <option value="night">Búho Nocturno</option>
                   </select>
                 </div>
                 <div>
-                  <label className="brutal-label flex items-center"><Music className="w-4 h-4 mr-3 text-brutal-tertiary" /> Ruido</label>
+                  <label className="editorial-label flex items-center"><Music className="w-3.5 h-3.5 mr-2 text-editorial-tertiary" /> Ruido</label>
                   <select
                     value={form.compatibility_form.noise}
                     onChange={e => setForm({ ...form, compatibility_form: { ...form.compatibility_form, noise: e.target.value } })}
-                    className="brutal-input appearance-none bg-brutal-accent/5"
+                    className="editorial-input appearance-none bg-transparent"
                   >
                     <option value="low">Baja (Silencio)</option>
                     <option value="medium">Media</option>
@@ -263,33 +274,33 @@ export default function Profile() {
                   </select>
                 </div>
                 <div>
-                  <label className="brutal-label flex items-center"><PawPrint className="w-4 h-4 mr-3 text-brutal-secondary" /> Mascotas</label>
+                  <label className="editorial-label flex items-center"><PawPrint className="w-3.5 h-3.5 mr-2 text-editorial-tertiary" /> Mascotas</label>
                   <select
                     value={form.compatibility_form.pets}
                     onChange={e => setForm({ ...form, compatibility_form: { ...form.compatibility_form, pets: e.target.value } })}
-                    className="brutal-input appearance-none bg-brutal-accent/5"
+                    className="editorial-input appearance-none bg-transparent"
                   >
                     <option value="no">Sin Mascotas</option>
                     <option value="yes">Mascotas OK</option>
                   </select>
                 </div>
                 <div>
-                  <label className="brutal-label flex items-center"><Info className="w-4 h-4 mr-3 text-brutal-tertiary" /> Fumar</label>
+                  <label className="editorial-label flex items-center"><Info className="w-3.5 h-3.5 mr-2 text-editorial-tertiary" /> Fumar</label>
                   <select
                     value={form.compatibility_form.smoking}
                     onChange={e => setForm({ ...form, compatibility_form: { ...form.compatibility_form, smoking: e.target.value } })}
-                    className="brutal-input appearance-none bg-brutal-accent/5"
+                    className="editorial-input appearance-none bg-transparent"
                   >
                     <option value="no">No Fumar</option>
                     <option value="yes">Fumar OK</option>
                   </select>
                 </div>
                 <div>
-                  <label className="brutal-label flex items-center"><BookOpen className="w-4 h-4 mr-3 text-brutal-secondary" /> Estudio</label>
+                  <label className="editorial-label flex items-center"><BookOpen className="w-3.5 h-3.5 mr-2 text-editorial-tertiary" /> Estudio</label>
                   <select
                     value={form.compatibility_form.study}
                     onChange={e => setForm({ ...form, compatibility_form: { ...form.compatibility_form, study: e.target.value } })}
-                    className="brutal-input appearance-none bg-brutal-accent/5"
+                    className="editorial-input appearance-none bg-transparent"
                   >
                     <option value="quiet">Estudio Tranquilo</option>
                     <option value="social">Estudio Social</option>
@@ -298,14 +309,14 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-16 border-t-8 border-brutal-ink">
+            <div className="flex items-center justify-between pt-10 border-t border-editorial-secondary/40">
               {message && (
-                <div className="px-8 py-4 bg-brutal-secondary text-white font-mono text-[12px] font-black uppercase tracking-widest shadow-[8px_8px_0px_0px_#000000]">
+                <div className="px-6 py-3 bg-emerald-50 text-emerald-800 border border-emerald-200 font-sans text-xs font-medium rounded-sm">
                   {message}
                 </div>
               )}
-              <button type="submit" className="brutal-btn brutal-btn-primary ml-auto text-xl px-12 py-6 shadow-[12px_12px_0px_0px_#0000FF] hover:shadow-none">
-                <Save className="w-6 h-6 mr-4" /> Guardar Perfil
+              <button type="submit" className="editorial-btn editorial-btn-primary ml-auto px-10 py-3">
+                <Save className="w-5 h-5 mr-2" /> Guardar Perfil
               </button>
             </div>
           </form>

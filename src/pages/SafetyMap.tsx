@@ -41,29 +41,29 @@ export default function SafetyMap() {
 
   return (
     <div className="space-y-12">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-brutal-ink/10 pb-12">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-editorial-secondary/40 pb-10">
         <div>
-          <h1 className="text-4xl md:text-5xl font-display font-medium text-brutal-ink tracking-tight leading-none mb-6">Mapa de Seguridad</h1>
-          <p className="font-sans text-gray-400 text-lg">Zonas de riesgo y seguridad estudiantil en Pamplona</p>
+          <h1 className="text-4xl md:text-5xl font-display font-medium text-editorial-ink tracking-tight leading-none mb-4">Mapa de Seguridad</h1>
+          <p className="font-sans text-editorial-tertiary text-lg">Zonas de riesgo y seguridad estudiantil en Pamplona</p>
         </div>
-        <div className="flex flex-wrap gap-6 bg-white p-6 border border-brutal-ink/10 shadow-brutal">
-          <div className="flex items-center space-x-3">
-            <div className="w-4 h-4 border border-brutal-ink/10 bg-[#22C55E] shadow-brutal"></div>
-            <span className="font-mono text-[9px] font-medium text-gray-500 uppercase tracking-widest">Seguro</span>
+        <div className="flex flex-wrap gap-5 bg-white p-4 px-6 border border-editorial-secondary/60 shadow-editorial rounded-sm">
+          <div className="flex items-center space-x-2">
+            <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
+            <span className="font-sans text-[11px] font-medium text-editorial-tertiary">Seguro</span>
           </div>
-          <div className="flex items-center space-x-3">
-            <div className="w-4 h-4 border border-brutal-ink/10 bg-[#EAB308] shadow-brutal"></div>
-            <span className="font-mono text-[9px] font-medium text-gray-500 uppercase tracking-widest">Moderado</span>
+          <div className="flex items-center space-x-2">
+            <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+            <span className="font-sans text-[11px] font-medium text-editorial-tertiary">Moderado</span>
           </div>
-          <div className="flex items-center space-x-3">
-            <div className="w-4 h-4 border border-brutal-ink/10 bg-[#EF4444] shadow-brutal"></div>
-            <span className="font-mono text-[9px] font-medium text-gray-500 uppercase tracking-widest">Alto Riesgo</span>
+          <div className="flex items-center space-x-2">
+            <div className="w-3 h-3 rounded-full bg-rose-500"></div>
+            <span className="font-sans text-[11px] font-medium text-editorial-tertiary">Alto Riesgo</span>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        <div className="lg:col-span-8 brutal-card bg-white overflow-hidden h-[600px] relative p-0">
+        <div className="lg:col-span-8 editorial-card overflow-hidden h-[600px] relative p-0">
           <MapContainer 
             key={zones.length}
             center={[7.375, -72.648]} 
@@ -85,28 +85,28 @@ export default function SafetyMap() {
                   positions={positions as any}
                   pathOptions={{
                     fillColor: getZoneColor(zone.safety_level),
-                    fillOpacity: 0.4,
-                    color: '#141414',
+                    fillOpacity: 0.35,
+                    color: getZoneColor(zone.safety_level),
                     weight: 2,
                     fill: true
                   }}
                   eventHandlers={{
                     mouseover: (e) => {
                       const layer = e.target;
-                      layer.setStyle({ fillOpacity: 0.7, weight: 4 });
+                      layer.setStyle({ fillOpacity: 0.6, weight: 3 });
                     },
                     mouseout: (e) => {
                       const layer = e.target;
-                      layer.setStyle({ fillOpacity: 0.4, weight: 2 });
+                      layer.setStyle({ fillOpacity: 0.35, weight: 2 });
                     }
                   }}
                 >
-                  <Popup className="brutal-popup">
-                    <div className="p-6 space-y-4 font-sans">
-                      <h3 className="font-display font-medium text-xl tracking-tight border-b border-brutal-ink/5 pb-3">{zone.name}</h3>
-                      <div className={`px-4 py-1.5 border font-mono text-[9px] font-medium uppercase tracking-widest inline-block shadow-brutal ${
-                        zone.safety_level === 'green' ? 'bg-[#22C55E] border-[#22C55E]/20 text-white' : 
-                        zone.safety_level === 'yellow' ? 'bg-[#EAB308] border-[#EAB308]/20 text-white' : 'bg-[#EF4444] border-[#EF4444]/20 text-white'
+                  <Popup>
+                    <div className="p-4 space-y-3 font-sans">
+                      <h3 className="font-display font-medium text-lg tracking-tight border-b border-editorial-secondary/30 pb-2">{zone.name}</h3>
+                      <div className={`px-3 py-1 font-sans text-[10px] font-medium uppercase tracking-wider inline-block rounded-sm ${
+                        zone.safety_level === 'green' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 
+                        zone.safety_level === 'yellow' ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-rose-50 text-rose-800 border border-rose-200'
                       }`}>
                         Riesgo {zone.safety_level === 'green' ? 'Bajo' : zone.safety_level === 'yellow' ? 'Moderado' : 'Alto'}
                       </div>
@@ -118,43 +118,43 @@ export default function SafetyMap() {
             })}
           </MapContainer>
           
-          <div className="absolute bottom-8 left-8 z-[1000] bg-white p-6 border border-brutal-ink/10 shadow-brutal max-w-xs hidden md:block">
-            <h4 className="font-display font-medium text-base tracking-tight flex items-center mb-3">
-              <Info className="w-4 h-4 mr-2 text-brutal-accent" /> Info Mapa
+          <div className="absolute bottom-6 left-6 z-[1000] bg-white/90 backdrop-blur-sm p-5 border border-editorial-secondary/40 shadow-editorial max-w-xs hidden md:block rounded-sm">
+            <h4 className="font-display font-medium text-sm tracking-tight flex items-center mb-2">
+              <Info className="w-4 h-4 mr-2 text-editorial-accent" /> Info Mapa
             </h4>
-            <p className="font-mono text-[8px] text-gray-400 leading-relaxed uppercase tracking-widest">
+            <p className="font-sans text-[11px] text-editorial-tertiary leading-relaxed">
               Datos basados en reportes históricos. Mantente siempre alerta a tu entorno.
             </p>
           </div>
         </div>
 
-        <div className="lg:col-span-4 space-y-8 flex flex-col">
-          <div className="brutal-card bg-white p-8 flex-1 flex flex-col">
-            <h3 className="text-2xl font-display font-bold text-brutal-ink mb-6 flex items-center tracking-tight">
+        <div className="lg:col-span-4 space-y-6 flex flex-col">
+          <div className="editorial-card p-8 flex-1 flex flex-col">
+            <h3 className="text-xl font-display font-medium text-editorial-ink mb-6 tracking-tight">
               Barrios
             </h3>
-            <div className="space-y-3 overflow-y-auto pr-2 custom-scrollbar flex-1 max-h-[400px]">
+            <div className="space-y-3 overflow-y-auto pr-2 flex-1 max-h-[400px]">
               {zones.map(zone => (
-                <div key={zone.id} className="p-5 border border-brutal-ink/5 bg-white hover:bg-brutal-bg transition-all cursor-pointer group shadow-sm hover:shadow-brutal">
+                <div key={zone.id} className="p-4 border border-editorial-secondary/30 bg-white hover:bg-editorial-bg transition-all cursor-pointer group rounded-sm">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-display font-bold text-base tracking-tight group-hover:text-brutal-accent transition-colors">{zone.name}</span>
-                    <div className={`w-4 h-4 border border-brutal-ink/10 shadow-brutal ${
-                      zone.safety_level === 'green' ? 'bg-[#22C55E]' : 
-                      zone.safety_level === 'yellow' ? 'bg-[#EAB308]' : 'bg-[#EF4444]'
+                    <span className="font-display font-medium text-sm tracking-tight group-hover:text-editorial-accent transition-colors">{zone.name}</span>
+                    <div className={`w-3 h-3 rounded-full ${
+                      zone.safety_level === 'green' ? 'bg-emerald-500' : 
+                      zone.safety_level === 'yellow' ? 'bg-amber-500' : 'bg-rose-500'
                     }`}></div>
                   </div>
-                  <p className="font-sans text-xs text-gray-500 line-clamp-3 leading-snug">{zone.description}</p>
+                  <p className="font-sans text-xs text-editorial-tertiary line-clamp-3 leading-relaxed">{zone.description}</p>
                 </div>
               ))}
             </div>
           </div>
           
-          <div className="bg-brutal-ink p-8 border border-brutal-ink/10 shadow-brutal text-white">
-            <h4 className="font-display font-medium text-lg tracking-tight mb-3 flex items-center">
-              <MapPin className="w-5 h-5 mr-3 text-brutal-accent" /> Tip de Seguridad
+          <div className="bg-editorial-accent/5 border border-editorial-accent/20 p-5 rounded-sm">
+            <h4 className="font-display font-medium text-sm tracking-tight mb-2 flex items-center text-editorial-ink">
+              <MapPin className="w-4 h-4 mr-2 text-editorial-accent" /> Tip de Seguridad
             </h4>
-            <p className="font-sans text-xs text-gray-300 leading-relaxed">
-              Prioriza barrios <span className="text-brutal-secondary font-bold">Verdes</span> como El Humilladero o Chapinero por su alta densidad estudiantil y patrullaje.
+            <p className="font-sans text-xs text-editorial-tertiary leading-relaxed">
+              Prioriza barrios <span className="text-emerald-700 font-medium">Verdes</span> como El Humilladero o Chapinero por su alta densidad estudiantil y patrullaje.
             </p>
           </div>
         </div>
