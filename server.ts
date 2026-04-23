@@ -89,11 +89,19 @@ db.exec(`
 `);
 db.exec("PRAGMA foreign_keys = ON;");
 
-// Seed Data Helper (only if empty)
-const seedData = () => {
+// Seed Data Helper (only if empty or reset)
+const seedData = (force = false) => {
   try {
+    if (force) {
+      console.log("Forcing database reset...");
+      db.prepare("DELETE FROM ratings").run();
+      db.prepare("DELETE FROM listings").run();
+      db.prepare("DELETE FROM zones").run();
+      db.prepare("DELETE FROM users").run();
+    }
+
     const userCount = (db.prepare("SELECT COUNT(*) as count FROM users").get() as any).count;
-    if (userCount > 0) {
+    if (userCount > 0 && !force) {
       console.log("Database already has data, skipping seed.");
       return;
     }
@@ -113,7 +121,7 @@ const seedData = () => {
       ["Camila Duarte", "camila@gmail.com", hashedPassword, "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=400&fit=crop", "Universidad de Pamplona", "Estudiante de artes, busco un espacio creativo y relajado.", 1, JSON.stringify({ schedule: "night", noise: "medium", pets: "yes", smoking: "yes", study: "social" })],
       ["Sebastian Peña", "sebas@gmail.com", hashedPassword, "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=400&h=400&fit=crop", "Universidad de Pamplona", "Gamer y programador. Busco internet rápido y buena vibra.", 0, JSON.stringify({ schedule: "night", noise: "medium", pets: "no", smoking: "no", study: "quiet" })],
       ["Mariana Lopez", "mariana@gmail.com", hashedPassword, "https://images.unsplash.com/photo-1488423191216-2fdc41e1b2d5?w=400&h=400&fit=crop", "Universidad de Pamplona", "Muy tranquila, me gusta leer y el silencio para estudiar.", 1, JSON.stringify({ schedule: "morning", noise: "low", pets: "no", smoking: "no", study: "quiet" })],
-      ["Admin User", "admin@unipamplona.edu.co", bcrypt.hashSync("admin123", 10), "icon:user", "Sistema", "Administrador de la Plataforma", 1, null]
+      ["Admin User", "admin@unipamplona.edu.co", hashedPassword, "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop", "Sistema", "Administrador de la Plataforma", 1, null]
     ];
     
     const userIds: number[] = [];
@@ -136,30 +144,42 @@ const seedData = () => {
       const result = insertZone.run(...z);
       zoneIds.push(Number(result.lastInsertRowid));
     });
-
-    console.log("Seeding listings...");
+    console.log("Seeding listings with verified images...");
     const insertListing = db.prepare("INSERT INTO listings (user_id, title, description, address, price, available_from, max_occupants, photos, rules, zone_id, lat, lng) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+    // Full Unsplash hashes for reliable loading
+    const interiorHashes = [
+      "1560448204-603b3fc33ddc", "1522708323590-d24dbb6b0267", "1502672260266-1c1ef2d93688", 
+      "1484154218962-a197022b5858", "1540518614846-7eded433c457", "1505691938895-1758d7eaa511", 
+      "1616594831707-3c773d328f44", "1595526114035-0d45ed16cfbf", "1512917774080-9991f1c4c750",
+      "1554995207-c18c203602cb", "1493809842364-78817add7ffb", "1560185127-6ed189bf02f4",
+      "1513694203232-719a280e022f", "1486304873000-235643847519", "1494438639946-1ebd1d20bf85",
+      "1519710164239-da123dc03ef4", "1586023492125-27b2c045efd7", "1507089947368-19c1da9775ae"
+    ];
+
+    const getImg = (idx: number) => `https://images.unsplash.com/photo-${interiorHashes[idx % interiorHashes.length]}?auto=format&fit=crop&w=800&q=80`;
+
     const listings = [
-      [userIds[1], "Habitación amplia cerca a la Unipamplona", "Habitación con baño privado y todos los servicios incluidos. Ambiente familiar.", "Calle 5 #4-20", 450000, "2026-04-01", 1, JSON.stringify(["https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&h=600&fit=crop"]), "No fumar, no mascotas", zoneIds[0], 7.3755, -72.6455],
-      [userIds[2], "Apartamento compartido en El Humilladero", "Busco roomie para compartir apartamento de 2 habitaciones. Muy central.", "Carrera 6 #3-15", 350000, "2026-05-01", 2, JSON.stringify(["https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop"]), "Se permiten visitas", zoneIds[1], 7.3795, -72.6515],
-      [userIds[3], "Habitación económica para estudiante", "Cerca a la sede del Rosario. Incluye servicios básicos.", "Calle 2 #8-10", 280000, "2026-04-15", 1, JSON.stringify(["https://images.unsplash.com/photo-1486304873000-235643847519?w=800&h=600&fit=crop"]), "Horas de silencio después de las 10PM", zoneIds[0], 7.3745, -72.6440],
-      [userIds[4], "Penthouse compartido con vista increíble", "Lugar moderno, buscamos a alguien responsable. Zona segura.", "Calle 5 #4-22", 600000, "2026-04-01", 2, JSON.stringify(["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop"]), "No fiestas", zoneIds[3], 7.3815, -72.6425],
-      [userIds[5], "Habitación iluminada en Santa Marta", "Excelente ubicación, cerca a supermercados y transporte.", "Carrera 10 #1-05", 320000, "2026-06-01", 2, JSON.stringify(["https://images.unsplash.com/photo-1554995207-c18c203602cb?w=800&h=600&fit=crop"]), "No fumar", zoneIds[0], 7.3735, -72.6460],
-      [userIds[6], "Estudio compartido cerca al parque principal", "Ideal para personas que trabajen o estudien. Ambiente tranquilo.", "Calle 8 #2-30", 400000, "2026-04-01", 1, JSON.stringify(["https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&h=600&fit=crop"]), "Mascotas bienvenidas", zoneIds[1], 7.3785, -72.6535],
-      [userIds[7], "Habitación amoblada en La Salle", "Cama doble, closet y escritorio incluidos. Muy acogedor.", "Carrera 4 #12-05", 380000, "2026-05-15", 3, JSON.stringify(["https://images.unsplash.com/photo-1505691938895-1758d7eaa511?w=800&h=600&fit=crop"]), "Todo incluido", zoneIds[2], 7.3760, -72.6485],
-      [userIds[0], "Apartamento moderno cerca a la Unipamplona", "Busco compañero para apartamento nuevo. Excelentes acabados.", "Calle 2 #8-12", 550000, "2026-04-01", 1, JSON.stringify(["https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop"]), "No fumar", zoneIds[0], 7.3750, -72.6435],
-      [userIds[8], "Habitación para gamer/estudiante", "Habitación con escritorio grande y buena conexión.", "Calle 10 #5-40", 300000, "2026-04-10", 1, JSON.stringify(["https://images.unsplash.com/photo-1598425237654-4fc758e50a93?w=800&h=600&fit=crop"]), "Respeto por el ruido", zoneIds[1], 7.3790, -72.6525],
-      [userIds[9], "Espacio tranquilo cerca a biblioteca", "Habitación silenciosa, ideal para estudio intenso.", "Carrera 7 #4-12", 330000, "2026-04-05", 1, JSON.stringify(["https://images.unsplash.com/photo-1519710164239-da123dc03ef4?w=800&h=600&fit=crop"]), "Silencio absoluto", zoneIds[0], 7.3740, -72.6450],
-      [userIds[1], "Habitación secundaria en El Humilladero", "Pequeña pero acogedora, servicios incluidos.", "Calle 4 #6-18", 250000, "2026-04-20", 1, JSON.stringify(["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop"]), "No visitas nocturnas", zoneIds[1], 7.3780, -72.6510],
-      [userIds[2], "Cama en habitación compartida", "Opción muy económica para estudiantes.", "Carrera 5 #8-30", 180000, "2026-04-01", 2, JSON.stringify(["https://images.unsplash.com/photo-1555854816-802f1f76fcb1?w=800&h=600&fit=crop"]), "Orden extremo", zoneIds[2], 7.3755, -72.6495],
-      [userIds[3], "Habitación master con tina", "Para quien busca comodidad total.", "Calle 12 #2-45", 700000, "2026-05-01", 1, JSON.stringify(["https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&h=600&fit=crop"]), "No mascotas", zoneIds[3], 7.3820, -72.6415],
-      [userIds[4], "Habitación cerca a zona de comidas", "Muy conveniente para quienes no cocinan.", "Carrera 9 #3-22", 340000, "2026-04-15", 1, JSON.stringify(["https://images.unsplash.com/photo-1536376074432-a228d0a59cf4?w=800&h=600&fit=crop"]), "No fumar en cuarto", zoneIds[0], 7.3748, -72.6465],
-      [userIds[5], "Cuarto amoblado estilo vintage", "Decoración única, ambiente muy agradable.", "Calle 6 #5-10", 420000, "2026-04-01", 1, JSON.stringify(["https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&h=600&fit=crop"]), "Cuidar muebles", zoneIds[1], 7.3792, -72.6530],
-      [userIds[6], "Habitación para postgrado", "Silencio garantizado, cerca a facultades.", "Carrera 4 #8-20", 360000, "2026-04-15", 1, JSON.stringify(["https://images.unsplash.com/photo-1554995207-c18c203602cb?w=800&h=600&fit=crop"]), "No ruidos fuertes", zoneIds[2], 7.3765, -72.6475],
-      [userIds[7], "Apartamento compartido - El Rosario", "Busco roomie para compartir gastos. Muy central.", "Calle 3 #7-15", 310000, "2026-04-01", 2, JSON.stringify(["https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&h=600&fit=crop"]), "Limpieza semanal", zoneIds[0], 7.3752, -72.6445],
-      [userIds[8], "Habitación con vista al parque", "Lugar muy tranquilo y seguro.", "Carrera 6 #2-10", 390000, "2026-05-01", 1, JSON.stringify(["https://images.unsplash.com/photo-1505691938895-1758d7eaa511?w=800&h=600&fit=crop"]), "No fumar", zoneIds[1], 7.3788, -72.6520],
-      [userIds[9], "Estudio pequeño pero funcional", "Ideal para una persona, servicios incluidos.", "Calle 5 #9-30", 270000, "2026-04-01", 1, JSON.stringify(["https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&h=600&fit=crop"]), "No mascotas", zoneIds[0], 7.3742, -72.6458],
-      [userIds[0], "Habitación de lujo en zona norte", "Acabados de primera, baño privado.", "Carrera 12 #4-50", 650000, "2026-04-01", 1, JSON.stringify(["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop"]), "No fiestas", zoneIds[3], 7.3825, -72.6430]
+      [userIds[1], "Habitación amplia cerca a la Unipamplona", "Habitación con baño privado y todos los servicios incluidos. Ambiente familiar.", "Calle 5 #4-20", 450000, "2026-04-01", 1, JSON.stringify([getImg(0)]), "No fumar, no mascotas", zoneIds[0], 7.3755, -72.6455],
+      [userIds[2], "Apartamento compartido en El Humilladero", "Busco roomie para compartir apartamento de 2 habitaciones. Muy central.", "Carrera 6 #3-15", 350000, "2026-05-01", 2, JSON.stringify([getImg(1)]), "Se permiten visitas", zoneIds[1], 7.3795, -72.6515],
+      [userIds[3], "Habitación económica para estudiante", "Cerca a la sede del Rosario. Incluye servicios básicos.", "Calle 2 #8-10", 280000, "2026-04-15", 1, JSON.stringify([getImg(2)]), "Horas de silencio después de las 10PM", zoneIds[0], 7.3745, -72.6440],
+      [userIds[4], "Penthouse compartido con vista increíble", "Lugar moderno, buscamos a alguien responsable. Zona segura.", "Calle 5 #4-22", 600000, "2026-04-01", 2, JSON.stringify([getImg(3)]), "No fiestas", zoneIds[3], 7.3815, -72.6425],
+      [userIds[5], "Habitación iluminada en Santa Marta", "Excelente ubicación, cerca a supermercados y transporte.", "Carrera 10 #1-05", 320000, "2026-06-01", 2, JSON.stringify([getImg(4)]), "No fumar", zoneIds[0], 7.3735, -72.6460],
+      [userIds[6], "Estudio compartido cerca al parque principal", "Ideal para personas que trabajen o estudien. Ambiente tranquilo.", "Calle 8 #2-30", 400000, "2026-04-01", 1, JSON.stringify([getImg(5)]), "Mascotas bienvenidas", zoneIds[1], 7.3785, -72.6535],
+      [userIds[7], "Habitación amoblada en La Salle", "Cama doble, closet y escritorio incluidos. Muy acogedor.", "Carrera 4 #12-05", 380000, "2026-05-15", 3, JSON.stringify([getImg(6)]), "Todo incluido", zoneIds[2], 7.3760, -72.6485],
+      [userIds[0], "Apartamento moderno cerca a la Unipamplona", "Busco compañero para apartamento nuevo. Excelentes acabados.", "Calle 2 #8-12", 550000, "2026-04-01", 1, JSON.stringify([getImg(7)]), "No fumar", zoneIds[0], 7.3750, -72.6435],
+      [userIds[8], "Habitación para gamer/estudiante", "Habitación con escritorio grande y buena conexión.", "Calle 10 #5-40", 300000, "2026-04-10", 1, JSON.stringify([getImg(8)]), "Respeto por el ruido", zoneIds[1], 7.3790, -72.6525],
+      [userIds[9], "Espacio tranquilo cerca a biblioteca", "Habitación silenciosa, ideal para estudio intenso.", "Carrera 7 #4-12", 330000, "2026-04-05", 1, JSON.stringify([getImg(9)]), "Silencio absoluto", zoneIds[0], 7.3740, -72.6450],
+      [userIds[1], "Habitación secundaria en El Humilladero", "Pequeña pero acogedora, servicios incluidos.", "Calle 4 #6-18", 250000, "2026-04-20", 1, JSON.stringify([getImg(10)]), "No visitas nocturnas", zoneIds[1], 7.3780, -72.6510],
+      [userIds[2], "Cama en habitación compartida", "Opción muy económica para estudiantes.", "Carrera 5 #8-30", 180000, "2026-04-01", 2, JSON.stringify([getImg(11)]), "Orden extremo", zoneIds[2], 7.3755, -72.6495],
+      [userIds[3], "Habitación master con tina", "Para quien busca comodidad total.", "Calle 12 #2-45", 700000, "2026-05-01", 1, JSON.stringify([getImg(12)]), "No mascotas", zoneIds[3], 7.3820, -72.6415],
+      [userIds[4], "Habitación cerca a zona de comidas", "Muy conveniente para quienes no cocinan.", "Carrera 9 #3-22", 340000, "2026-04-15", 1, JSON.stringify([getImg(13)]), "No fumar en cuarto", zoneIds[0], 7.3748, -72.6465],
+      [userIds[5], "Cuarto amoblado estilo vintage", "Decoración única, ambiente muy agradable.", "Calle 6 #5-10", 420000, "2026-04-01", 1, JSON.stringify([getImg(14)]), "Cuidar muebles", zoneIds[1], 7.3792, -72.6530],
+      [userIds[6], "Habitación para postgrado", "Silencio garantizado, cerca a facultades.", "Carrera 4 #8-20", 360000, "2026-04-15", 1, JSON.stringify([getImg(15)]), "No ruidos fuertes", zoneIds[2], 7.3765, -72.6475],
+      [userIds[7], "Apartamento compartido - El Rosario", "Busco roomie para compartir gastos. Muy central.", "Calle 3 #7-15", 310000, "2026-04-01", 2, JSON.stringify([getImg(16)]), "Limpieza semanal", zoneIds[0], 7.3752, -72.6445],
+      [userIds[8], "Habitación con vista al parque", "Lugar muy tranquilo y seguro.", "Carrera 6 #2-10", 390000, "2026-05-01", 1, JSON.stringify([getImg(17)]), "No fumar", zoneIds[1], 7.3788, -72.6520],
+      [userIds[9], "Estudio pequeño pero funcional", "Ideal para una persona, servicios incluidos.", "Calle 5 #9-30", 270000, "2026-04-01", 1, JSON.stringify([getImg(0)]), "No mascotas", zoneIds[0], 7.3742, -72.6458],
+      [userIds[0], "Habitación de lujo en zona norte", "Acabados de primera, baño privado.", "Carrera 12 #4-50", 650000, "2026-04-01", 1, JSON.stringify([getImg(1)]), "No fiestas", zoneIds[3], 7.3825, -72.6430]
     ];
     
     const listingIds: number[] = [];
@@ -203,7 +223,9 @@ const seedData = () => {
     console.error("Error seeding data:", error);
   }
 };
-seedData();
+// Check if reset flag is passed in command line
+const shouldReset = process.argv.includes('--reset');
+seedData(shouldReset);
 
 async function startServer() {
   try {

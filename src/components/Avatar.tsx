@@ -52,7 +52,7 @@ export default function Avatar({ photoUrl, className = "w-10 h-10 border border-
 
   return (
     <img 
-      src={photoUrl || 'https://picsum.photos/seed/user/150/150'} 
+      src={photoUrl || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=150&h=150&fit=crop'} 
       alt="" 
       className={`${className} object-cover`} 
       referrerPolicy="no-referrer"

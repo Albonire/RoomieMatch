@@ -147,7 +147,7 @@ export default function Home() {
           >
             <div className="relative aspect-[4/3] overflow-hidden rounded-t-sm">
               <img
-                src={listing.photos[0] || 'https://picsum.photos/seed/room/800/600'}
+                src={listing.photos[0] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80'}
                 alt={listing.title}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 referrerPolicy="no-referrer"

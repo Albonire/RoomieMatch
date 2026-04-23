@@ -130,12 +130,22 @@ export default function ListingDetail() {
       {/* Photo Gallery */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 rounded-sm overflow-hidden">
         <div className="md:col-span-2 aspect-video overflow-hidden">
-          <img src={listing.photos[0]} alt="" className="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.02]" referrerPolicy="no-referrer" />
+          <img 
+            src={listing.photos[0] || 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=1200&q=80'} 
+            alt="" 
+            className="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.02]" 
+            referrerPolicy="no-referrer" 
+          />
         </div>
         <div className="grid grid-cols-2 md:grid-cols-1 gap-3">
-          {listing.photos.slice(1, 3).map((p, i) => (
-            <div key={i} className="aspect-square overflow-hidden">
-              <img src={p} alt="" className="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.02]" referrerPolicy="no-referrer" />
+          {[1, 2].map((idx) => (
+            <div key={idx} className="aspect-square overflow-hidden">
+              <img 
+                src={listing.photos[idx] || `https://images.unsplash.com/photo-${['7pCFUybP_P8', 'i9Lp1hd5M-c'][idx-1]}?w=600&q=80`} 
+                alt="" 
+                className="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.02]" 
+                referrerPolicy="no-referrer" 
+              />
             </div>
           ))}
           {listing.photos.length < 2 && <div className="bg-editorial-secondary/20 flex items-center justify-center text-editorial-tertiary font-sans text-xs">No hay más fotos</div>}
