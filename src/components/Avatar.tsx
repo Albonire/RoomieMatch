@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   User as UserIcon, Smile, Ghost, Cat, Dog, Rocket, 
   Coffee, Music, Gamepad2, Camera, Palette, Heart, 
@@ -33,6 +33,9 @@ const AVATAR_ICONS: Record<string, any> = {
   headphones: Headphones
 };
 
+const DEFAULT_FEMALE_AVATAR =
+  'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop';
+
 interface AvatarProps {
   photoUrl?: string;
   className?: string;
@@ -40,6 +43,12 @@ interface AvatarProps {
 }
 
 export default function Avatar({ photoUrl, className = "w-10 h-10 border border-editorial-secondary/40", iconClassName = "w-5 h-5" }: AvatarProps) {
+  const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    setImageError(false);
+  }, [photoUrl]);
+
   if (photoUrl?.startsWith('icon:')) {
     const iconId = photoUrl.split(':')[1];
     const Icon = AVATAR_ICONS[iconId] || UserIcon;
@@ -50,12 +59,28 @@ export default function Avatar({ photoUrl, className = "w-10 h-10 border border-
     );
   }
 
+  const resolvedSrc = photoUrl && /^https?:\/\//i.test(photoUrl)
+    ? `/api/image-proxy?url=${encodeURIComponent(photoUrl)}`
+    : photoUrl || '';
+
+  if (!resolvedSrc || imageError) {
+    return (
+      <img
+        src={DEFAULT_FEMALE_AVATAR}
+        alt="Avatar femenino"
+        className={`${className} object-cover`}
+        referrerPolicy="no-referrer"
+      />
+    );
+  }
+
   return (
     <img 
-      src={photoUrl || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=150&h=150&fit=crop'} 
-      alt="" 
+      src={resolvedSrc}
+      alt="Avatar de usuario" 
       className={`${className} object-cover`} 
       referrerPolicy="no-referrer"
+      onError={() => setImageError(true)}
     />
   );
 }
