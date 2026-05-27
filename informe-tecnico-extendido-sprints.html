@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>RoomieMatch · Informe de Avances Técnicos (Sprint 2 & 3)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap');
+  
+  @page {
+    size: A4;
+    margin: 20mm;
+    background: #f5f4ed;
+    @bottom-center {
+      content: "Ingeniería de Sistemas · RoomieMatch · " counter(page);
+      font-family: 'Inter', sans-serif;
+      font-size: 8pt;
+      color: #6b6a64;
+    }
+  }
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --parchment: #f5f4ed;
+    --ivory:     #faf9f5;
+    --near-black:#141413;
+    --brand:     #1B365D;
+    --brand-light: #EEF2F7;
+    --stone:     #6b6a64;
+    --olive:     #504e49;
+    --border:    #e8e6dc;
+    --serif: Charter, Georgia, Palatino, "Times New Roman", serif;
+    --sans: 'Inter', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  body {
+    color: var(--near-black);
+    font-family: var(--serif);
+    font-size: 10pt;
+    line-height: 1.55;
+    background: var(--parchment);
+  }
+
+  /* ========== SECTIONS & PAGE BREAKS ========== */
+  .page { page-break-after: always; min-height: 260mm; padding-top: 10mm; }
+  .page:last-child { page-break-after: auto; }
+
+  /* ========== COVER PAGE ========== */
+  .cover-page {
+    height: 250mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+    padding-top: 20mm;
+  }
+  .univ-header { margin-top: 30pt; }
+  .univ-name { font-family: var(--sans); font-weight: 700; font-size: 18pt; color: var(--brand); letter-spacing: 3pt; text-transform: uppercase; }
+  .dept-name { font-family: var(--sans); font-size: 11pt; color: var(--stone); margin-top: 8pt; text-transform: uppercase; letter-spacing: 1pt; }
+  
+  .project-hero { margin: 60pt 0; }
+  .project-title { font-size: 58pt; font-weight: 500; letter-spacing: -2pt; }
+  .project-title span { font-style: italic; color: var(--brand); }
+  .report-label { font-family: var(--sans); font-size: 16pt; color: var(--olive); margin-top: 20pt; letter-spacing: 4pt; text-transform: uppercase; }
+
+  .authors-box {
+    text-align: left;
+    max-width: 440pt;
+    margin: 0 auto;
+    font-family: var(--sans);
+    padding: 35pt;
+    background: var(--ivory);
+    border: 0.5pt solid var(--border);
+    display: grid;
+    grid-template-columns: 130pt 1fr;
+    gap: 18pt;
+    box-shadow: 0 10pt 30pt rgba(0,0,0,0.03);
+  }
+  .author-label { font-weight: 700; color: var(--brand); font-size: 9pt; text-transform: uppercase; letter-spacing: 1.2pt; }
+  .academic-value { font-size: 11pt; color: var(--near-black); }
+
+  /* ========== CONTENT STYLES ========== */
+  .header-main { border-left: 5pt solid var(--brand); padding-left: 18pt; margin-bottom: 35pt; }
+  .eyebrow { font-family: var(--sans); font-size: 10pt; color: var(--brand); font-weight: 700; text-transform: uppercase; letter-spacing: 2.5pt; }
+  h1 { font-size: 32pt; font-weight: 500; margin: 8pt 0; letter-spacing: -0.8pt; }
+  
+  h2 { font-family: var(--sans); font-size: 18pt; font-weight: 600; color: var(--brand); margin: 30pt 0 15pt 0; border-bottom: 1.2pt solid var(--brand); padding-bottom: 8pt; }
+  h3 { font-family: var(--sans); font-size: 13pt; font-weight: 600; margin: 22pt 0 10pt 0; color: var(--near-black); border-left: 3pt solid var(--stone); padding-left: 10pt; }
+
+  p { margin-bottom: 14pt; text-align: justify; }
+  .hl { color: var(--brand); font-weight: 600; }
+  code { font-family: var(--mono); background: rgba(27, 54, 93, 0.08); padding: 1pt 4pt; border-radius: 3pt; font-size: 90%; color: var(--brand); }
+
+  .diagram-container {
+    background: var(--ivory);
+    border: 0.5pt solid var(--border);
+    padding: 25pt;
+    margin: 30pt 0;
+    border-radius: 4pt;
+    box-shadow: inset 0 0 20pt rgba(0,0,0,0.01);
+  }
+  .caption { font-family: var(--sans); font-size: 9pt; color: var(--stone); text-align: center; margin-top: 12pt; font-style: italic; }
+
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--sans);
+    font-size: 9.5pt;
+    margin: 20pt 0;
+  }
+  table.data-table th { background: var(--brand); color: white; text-align: left; padding: 10pt; border: 0.5pt solid var(--brand); }
+  table.data-table td { padding: 8pt; border: 0.5pt solid var(--border); }
+  table.data-table tr:nth-child(even) { background: var(--ivory); }
+
+  .tech-card {
+    background: white;
+    border: 0.5pt solid var(--border);
+    padding: 20pt;
+    margin: 15pt 0;
+    border-left: 3pt solid var(--brand);
+  }
+  .tech-card h4 { font-family: var(--sans); font-size: 11pt; font-weight: 700; color: var(--brand); margin-bottom: 8pt; text-transform: uppercase; letter-spacing: 0.5pt; }
+
+  ul.check-list { list-style: none; margin-bottom: 18pt; }
+  ul.check-list li { position: relative; padding-left: 24pt; margin-bottom: 10pt; }
+  ul.check-list li::before { content: "→"; position: absolute; left: 0; color: var(--brand); font-weight: 900; }
+
+  .footer { border-top: 0.8pt solid var(--border); padding-top: 15pt; margin-top: 40pt; font-family: var(--sans); font-size: 8.5pt; color: var(--stone); display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+
+<!-- PÁGINA 1: PORTADA -->
+<div class="page cover-page">
+  <div class="univ-header">
+    <div class="univ-name">Universidad de Pamplona</div>
+    <div class="dept-name">Facultad de Ingenierías y Arquitectura<br>Departamento de Ingeniería de Sistemas</div>
+  </div>
+
+  <div class="project-hero">
+    <div class="project-title">Roomie<span>Match</span></div>
+    <div class="report-label">Informe de Consolidación Técnica</div>
+    <div style="font-family: var(--sans); font-size: 11pt; color: var(--stone); margin-top: 25pt; letter-spacing: 4pt; font-weight: 500;">AVANCES INTEGRADOS SPRINT 2 Y SPRINT 3</div>
+  </div>
+
+  <div class="authors-box">
+    <div class="author-label">Proyecto</div>
+    <div class="academic-value">Plataforma de Optimización Habitacional Estudiantil basada en Afinidad Genética y Datos Geoespaciales</div>
+
+    <div class="author-label">Asignatura</div>
+    <div class="academic-value">Proyecto Integrador I</div>
+
+    <div class="author-label">Integrantes</div>
+    <div class="academic-value">
+      <strong>Anderson Fabian González</strong><br>
+      <strong>Ivan Piñeres Lopes</strong><br>
+      <strong>Jhon Duque</strong>
+    </div>
+
+    <div class="author-label">Docente</div>
+    <div class="academic-value">Ing. Avilio Villamizar</div>
+
+    <div class="author-label">Fecha</div>
+    <div class="academic-value">7 de Mayo de 2026</div>
+  </div>
+
+  <div style="margin-bottom: 30pt; font-family: var(--sans); font-size: 10pt; color: var(--stone); letter-spacing: 1pt;">
+    Pamplona, Norte de Santander · Colombia
+  </div>
+</div>
+
+<!-- PÁGINA 2: ARQUITECTURA Y INFRAESTRUCTURA -->
+<div class="page">
+  <div class="header-main">
+    <div class="eyebrow">Sección I · Fundamentos de Ingeniería</div>
+    <h1>Evolución de la Infraestructura</h1>
+  </div>
+
+  <p>
+    Durante los ciclos 2 y 3, el proyecto <span class="hl">RoomieMatch</span> ha evolucionado de un prototipo conceptual a un sistema distribuido con alta fidelidad técnica. La arquitectura se ha refinado para soportar un stack moderno de <span class="hl">JavaScript/TypeScript</span> que garantiza una experiencia de usuario fluida y una persistencia de datos segura.
+  </p>
+
+  <h2>1.1 Stack Tecnológico de Vanguardia</h2>
+  <div class="tech-card">
+    <h4>Frontend: React 19 + Vite 6</h4>
+    <p>Uso de las últimas características de React para la gestión de formularios asíncronos y transiciones de estado. Vite 6 proporciona un entorno de desarrollo instantáneo con <code>Hot Module Replacement (HMR)</code> optimizado.</p>
+  </div>
+  <div class="tech-card">
+    <h4>Estilizado: Tailwind CSS 4.0</h4>
+    <p>Implementación del nuevo motor de Tailwind que utiliza una arquitectura basada en CSS nativo, reduciendo el tiempo de compilación y permitiendo variables de diseño directamente en la hoja de estilos raíz.</p>
+  </div>
+  <div class="tech-card">
+    <h4>Backend: Node.js ESM + SQLite</h4>
+    <p>Arquitectura de servidor modular (ES Modules) que utiliza <code>better-sqlite3</code> para una persistencia de baja latencia mediante drivers nativos en C++, ideal para el volumen de datos de una ciudad universitaria.</p>
+  </div>
+
+  <h2>1.2 Diagrama de Arquitectura de Sistemas</h2>
+  <div class="diagram-container">
+    <svg viewBox="0 0 960 350" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#1B365D" />
+        </marker>
+      </defs>
+      <!-- Layer 1 -->
+      <rect x="50" y="20" width="860" height="60" rx="4" fill="#faf9f5" stroke="#141413" stroke-width="1.2"/>
+      <text x="80" y="55" font-family="sans-serif" font-weight="700" font-size="14">CAPA DE CLIENTE · SPA (Single Page Application)</text>
+      <text x="80" y="70" font-family="monospace" font-size="9" fill="#504e49">React 19 Hooks · Context API · Lucide Icons · Framer Motion</text>
+      
+      <!-- Layer 2 -->
+      <rect x="50" y="110" width="860" height="60" rx="4" fill="#EEF2F7" stroke="#1B365D" stroke-width="1.2"/>
+      <text x="80" y="145" font-family="sans-serif" font-weight="700" font-size="14" fill="#1B365D">CAPA DE LÓGICA · REST API</text>
+      <text x="80" y="160" font-family="monospace" font-size="9" fill="#1B365D">Express Middleware · JWT Validation · Bcrypt Hashing · Google GenAI SDK</text>
+
+      <!-- Layer 3 -->
+      <rect x="50" y="200" width="860" height="60" rx="4" fill="#f5f4ed" stroke="#504e49" stroke-width="1.2"/>
+      <text x="80" y="235" font-family="sans-serif" font-weight="700" font-size="14">CAPA DE ACCESO A DATOS · DAL</text>
+      <text x="80" y="250" font-family="monospace" font-size="9" fill="#504e49">Better-SQLite3 Prepared Statements · Transaction Logic</text>
+
+      <!-- Layer 4 -->
+      <rect x="300" y="280" width="360" height="40" rx="20" fill="#f0efe8" stroke="#6b6a64" stroke-dasharray="5 2"/>
+      <text x="480" y="305" text-anchor="middle" font-family="sans-serif" font-weight="600" font-size="12">ALMACENAMIENTO: roomiematch.db (SQLite)</text>
+    </svg>
+    <div class="caption">Figura 1. Descomposición funcional de la arquitectura por niveles de responsabilidad.</div>
+  </div>
+</div>
+
+<!-- PÁGINA 3: MÓDULO GIS Y SEGURIDAD -->
+<div class="page">
+  <div class="header-main">
+    <div class="eyebrow">Sección II · Módulo Geoespacial</div>
+    <h1>Geozonificación y Seguridad Urbana</h1>
+  </div>
+
+  <p>
+    Uno de los avances más significativos ha sido la integración de un <span class="hl">Sistema de Información Geográfica (GIS)</span> embebido. La plataforma no solo muestra anuncios, sino que analiza el entorno urbano para informar al estudiante sobre la seguridad de los barrios de Pamplona.
+  </p>
+
+  <h2>2.1 Implementación de React-Leaflet</h2>
+  <p>Se ha implementado el componente <code>SafetyMap.tsx</code>, el cual utiliza la cartografía dinámica de OpenStreetMap para superponer capas de polígonos representativos.</p>
+  
+  <ul class="check-list">
+    <li><strong>Soporte GeoJSON:</strong> Almacenamiento de coordenadas poligonales de barrios (ej: Campus Principal, Humilladero, Centro) directamente en SQLite.</li>
+    <li><strong>Zonificación de Riesgo:</strong> Implementación de una función de estilo dinámico que asigna colores <code>HEX</code> basados en el atributo <code>safety_level</code> (Bajo, Medio, Alto).</li>
+    <li><strong>Interactividad Vectorial:</strong> Uso de <code>eventHandlers</code> para capturar <code>mouseover</code> y <code>mouseout</code>, proporcionando feedback visual inmediato mediante popups reactivos.</li>
+  </ul>
+
+  <h2>2.2 Captura de Coordenadas de Vivienda</h2>
+  <div class="tech-card">
+    <h4>Componente LocationPicker</h4>
+    <p>Dentro del flujo de creación de publicaciones (<code>CreateListing.tsx</code>), se desarrolló un <code>LocationPicker</code> personalizado que utiliza el hook <code>useMapEvents</code>. Esto permite transformar un clic físico en el mapa en coordenadas <code>lat</code> y <code>lng</code> con precisión de 6 decimales.</p>
+    <code>const {lat, lng} = e.latlng; // Persistidos como REAL en DB</code>
+  </div>
+
+  <h3>Muestra de Esquema de Zonas</h3>
+  <table class="data-table">
+    <thead>
+      <tr><th>Barrio</th><th>Nivel Riesgo</th><th>Atributo GeoJSON</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>El Humilladero</td><td>Bajo (Verde)</td><td>Polygon (6 vértices)</td></tr>
+      <tr><td>Centro Histórico</td><td>Medio (Amarillo)</td><td>Polygon (5 vértices)</td></tr>
+      <tr><td>Salida a Cúcuta</td><td>Alto (Rojo)</td><td>Polygon (6 vértices)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- PÁGINA 4: ALGORITMIA Y IA -->
+<div class="page">
+  <div class="header-main">
+    <div class="eyebrow">Sección III · Lógica de Afinidad y IA</div>
+    <h1>Algoritmos de Matching y Scaffolding AI</h1>
+  </div>
+
+  <p>
+    El núcleo de inteligencia del proyecto reside en el motor de compatibilidad. En el Sprint 3, se consolidó la infraestructura para el procesamiento avanzado de datos estudiantiles.
+  </p>
+
+  <h2>3.1 Algoritmo de Compatibilidad (Matching Engine)</h2>
+  <p>Se ha desarrollado un algoritmo de filtrado colaborativo basado en perfiles de hábitos. La lógica se ejecuta en el servidor para asegurar la consistencia del ranking.</p>
+
+  <div class="tech-card">
+    <h4>Fórmula de Afinidad Estudiantil</h4>
+    <p>El sistema evalúa 5 dimensiones críticas para la convivencia:</p>
+    <code>Score = ( (Coincidencia_Horario + Ruido + Mascotas + Fumar + Estudio) / 5 ) * 100</code>
+  </div>
+
+  <div class="diagram-container">
+    <svg viewBox="0 0 800 250" xmlns="http://www.w3.org/2000/svg">
+      <rect x="50" y="50" width="150" height="150" rx="8" fill="#fff" stroke="#141413"/>
+      <text x="125" y="130" text-anchor="middle" font-size="10" font-weight="700">Usuario A (Form)</text>
+      
+      <path d="M 200 125 L 300 125" stroke="#1B365D" stroke-width="2" marker-end="url(#arrowhead)"/>
+      
+      <rect x="300" y="50" width="200" height="150" rx="8" fill="#EEF2F7" stroke="#1B365D"/>
+      <text x="400" y="100" text-anchor="middle" font-size="11" font-weight="700">MOTOR DE RANKING</text>
+      <text x="400" y="125" text-anchor="middle" font-size="9" font-family="monospace">O(N) Iteration</text>
+      <text x="400" y="145" text-anchor="middle" font-size="8" fill="#1B365D">Σ matches / variables</text>
+
+      <path d="M 500 125 L 600 125" stroke="#1B365D" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+      <rect x="600" y="50" width="150" height="150" rx="8" fill="#fff" stroke="#141413"/>
+      <text x="675" y="130" text-anchor="middle" font-size="10" font-weight="700">Ranking Ordenado</text>
+    </svg>
+    <div class="caption">Figura 2. Proceso de cálculo de compatibilidad y generación de candidatos.</div>
+  </div>
+
+  <h2>3.2 Infraestructura IA: Google Gemini</h2>
+  <p>
+    Como avance estratégico en el Sprint 3, se ha integrado el SDK <code>@google/genai</code>. Aunque el sistema ya opera sobre reglas deterministas, se ha dejado listo el <span class="hl">puente tecnológico</span> para el procesamiento cognitivo de descripciones de vivienda.
+  </p>
+  <ul class="check-list">
+    <li><strong>Inyección de Secretos:</strong> Configuración en <code>vite.config.ts</code> para el manejo seguro de la <code>GEMINI_API_KEY</code>.</li>
+    <li><strong>Extracción de Reglas:</strong> Capacidad técnica para analizar texto libre (descripciones) y detectar automáticamente reglas de convivencia no estructuradas.</li>
+    <li><strong>Análisis de Sentimiento:</strong> Infraestructura preparada para evaluar la calidad de los comentarios y ratings en las publicaciones.</li>
+  </ul>
+</div>
+
+<!-- PÁGINA 5: GOBERNANZA Y PERSISTENCIA -->
+<div class="page">
+  <div class="header-main">
+    <div class="eyebrow">Sección IV · Operaciones y Datos</div>
+    <h1>Gobernanza y Modelo Relacional</h1>
+  </div>
+
+  <p>
+    La integridad del sistema se mantiene mediante un estricto control administrativo y un modelo de datos normalizado que evita redundancias y garantiza la integridad referencial.
+  </p>
+
+  <h2>4.1 Dashboard de Administración Estudiantil</h2>
+  <p>Se implementó la ruta protegida <code>/admin</code> que permite al personal universitario verificar la identidad de los usuarios registrados, mitigando el riesgo de perfiles falsos.</p>
+  
+  <div class="tech-card">
+    <h4>Flujo de Verificación (Secuencia)</h4>
+    <ul class="check-list">
+      <li>Admin consulta la lista de usuarios con estado <code>is_verified = 0</code>.</li>
+      <li>Ejecución del endpoint <code>POST /api/admin/verify/:id</code>.</li>
+      <li>Actualización atómica en SQLite y refresco de estado en el cliente vía React.</li>
+    </ul>
+  </div>
+
+  <h2>4.2 Modelo de Datos Consolidado (v2.0)</h2>
+  <table class="data-table">
+    <thead>
+      <tr><th>Tabla</th><th>Campos Técnicos Clave</th><th>Restricciones</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>users</code></td><td><code>password_hash (bcrypt)</code>, <code>is_verified (INT)</code></td><td><code>UNIQUE email (@unipamplona)</code></td></tr>
+      <tr><td><code>listings</code></td><td><code>lat, lng (REAL)</code>, <code>photos (JSON TEXT)</code></td><td><code>FK user_id CASCADE</code></td></tr>
+      <tr><td><code>zones</code></td><td><code>geojson (TEXT)</code>, <code>safety_level (ENUM)</code></td><td><code>PRIMARY KEY id</code></td></tr>
+      <tr><td><code>ratings</code></td><td><code>stars (1-5)</code>, <code>listing_id (INT)</code></td><td><code>UNIQUE(listing_id, user_id)</code></td></tr>
+    </tbody>
+  </table>
+
+  <h2>4.3 Conclusiones de Ingeniería</h2>
+  <p>
+    El cierre del Sprint 3 demuestra que RoomieMatch posee una base sólida capaz de escalar. La combinación de <strong>seguridad institucional</strong>, <strong>inteligencia geográfica</strong> y un <strong>motor de compatibilidad</strong> propio, posiciona a la plataforma como una solución de ingeniería de alto impacto para la Universidad de Pamplona.
+  </p>
+
+  <div class="footer">
+    <span>PROYECTO INTEGRADOR · ING. SISTEMAS</span>
+    <span>SOPORTE: Anderson González, Iván Piñeres, Jhon Duque</span>
+  </div>
+</div>
+
+</body>
+</html>

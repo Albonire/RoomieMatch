@@ -11,6 +11,7 @@ const __dirname = path.dirname(__filename);
 
 const db = new Database("roomiematch.db");
 const JWT_SECRET = process.env.JWT_SECRET || "roomie-secret-key-123";
+const APP_ORIGIN = `http://0.0.0.0:3000`;
 
 // Extend Express Request
 declare global {
@@ -227,11 +228,201 @@ const seedData = (force = false) => {
 const shouldReset = process.argv.includes('--reset');
 seedData(shouldReset);
 
+// Extra images repository (used to fill missing photos for listings)
+const EXTRA_PHOTO_HASHES = [
+  "1560448204-603b3fc33ddc", "1522708323590-d24dbb6b0267", "1502672260266-1c1ef2d93688",
+  "1484154218962-a197022b5858", "1540518614846-7eded433c457", "1505691938895-1758d7eaa511",
+  "1616594831707-3c773d328f44", "1595526114035-0d45ed16cfbf", "1512917774080-9991f1c4c750",
+  "1554995207-c18c203602cb", "1493809842364-78817add7ffb", "1560185127-6ed189bf02f4",
+  "1513694203232-719a280e022f", "1486304873000-235643847519", "1494438639946-1ebd1d20bf85",
+  "1519710164239-da123dc03ef4", "1586023492125-27b2c045efd7", "1507089947368-19c1da9775ae"
+];
+
+const getExtraImg = (idx: number) => `https://images.unsplash.com/photo-${EXTRA_PHOTO_HASHES[idx % EXTRA_PHOTO_HASHES.length]}?auto=format&fit=crop&w=1200&q=80`;
+
+// Ensure each listing has at least N photos. Updates DB in-place.
+function ensureListingPhotos(minPhotos = 4) {
+  try {
+    const rows: any[] = db.prepare("SELECT id, photos FROM listings").all();
+    const update = db.prepare("UPDATE listings SET photos = ? WHERE id = ?");
+    rows.forEach((r, i) => {
+      let photos: string[] = [];
+      try {
+        photos = JSON.parse(r.photos || '[]');
+      } catch (e) {
+        photos = [];
+      }
+      if (!Array.isArray(photos)) photos = [];
+      const originalLength = photos.length;
+      let addIndex = i;
+      while (photos.length < minPhotos) {
+        photos.push(getExtraImg(addIndex));
+        addIndex++;
+      }
+      if (photos.length !== originalLength) {
+        update.run(JSON.stringify(photos), r.id);
+        console.log(`Patched listing ${r.id}: photos ${originalLength} -> ${photos.length}`);
+      }
+    });
+  } catch (err) {
+    console.error('Error ensuring listing photos:', err);
+  }
+}
+
+// Run photo fill pass on startup so existing DB entries get additional images.
+ensureListingPhotos(4);
+
+// If the repository owner provided a curated list of image URLs, use them
+// to assign unique images to listings to avoid broken or repeated photos.
+const CURATED_IMAGES: string[] = [
+  // PEXELS - Sala / Estudio
+  "https://images.pexels.com/photos/6934189/pexels-photo-6934189.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/7060814/pexels-photo-7060814.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/6447384/pexels-photo-6447384.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/4993081/pexels-photo-4993081.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/5570222/pexels-photo-5570222.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/6588599/pexels-photo-6588599.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/2227832/pexels-photo-2227832.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/813692/pexels-photo-813692.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/6438748/pexels-photo-6438748.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/7534273/pexels-photo-7534273.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/3952034/pexels-photo-3952034.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/4468806/pexels-photo-4468806.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/4846097/pexels-photo-4846097.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/5490369/pexels-photo-5490369.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/6316065/pexels-photo-6316065.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/6933852/pexels-photo-6933852.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/5825527/pexels-photo-5825527.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  // PEXELS - Cocina
+  "https://images.pexels.com/photos/7535076/pexels-photo-7535076.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/7031213/pexels-photo-7031213.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/6487939/pexels-photo-6487939.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/4992465/pexels-photo-4992465.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/27390284/pexels-photo-27390284.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  // PEXELS - Dormitorio
+  "https://images.pexels.com/photos/6636262/pexels-photo-6636262.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/6492402/pexels-photo-6492402.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/7045996/pexels-photo-7045996.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/5998039/pexels-photo-5998039.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  // PEXELS - Baños
+  "https://images.pexels.com/photos/6585741/pexels-photo-6585741.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/6621052/pexels-photo-6621052.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/7511696/pexels-photo-7511696.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/6207947/pexels-photo-6207947.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/7005268/pexels-photo-7005268.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/6636300/pexels-photo-6636300.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/7045358/pexels-photo-7045358.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/6957087/pexels-photo-6957087.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/6487949/pexels-photo-6487949.jpeg?auto=compress&cs=tinysrgb&w=1200",
+];
+
+function ensureListingPhotosFromCurated(urls: string[], minPhotos = 4) {
+  try {
+    const rows: any[] = db.prepare("SELECT id FROM listings ORDER BY id").all();
+    const update = db.prepare("UPDATE listings SET photos = ? WHERE id = ?");
+    if (!urls || urls.length === 0) return;
+
+    // Shuffle a pool of URLs and consume them; when exhausted, reshuffle the full list
+    const shuffle = (arr: string[]) => {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    };
+
+    let pool = shuffle(urls);
+    let poolIndex = 0;
+
+    rows.forEach((r) => {
+      const photos: string[] = [];
+      const used = new Set();
+      while (photos.length < minPhotos) {
+        if (poolIndex >= pool.length) {
+          pool = shuffle(urls);
+          poolIndex = 0;
+        }
+        const candidate = pool[poolIndex++];
+        if (!used.has(candidate)) {
+          photos.push(candidate);
+          used.add(candidate);
+        }
+      }
+      update.run(JSON.stringify(photos), r.id);
+      console.log(`Assigned curated photos to listing ${r.id}`);
+    });
+  } catch (err) {
+    console.error('Error assigning curated photos:', err);
+  }
+}
+
+// Prefer curated images to avoid broken links and minimize repetitions.
+ensureListingPhotosFromCurated(CURATED_IMAGES, 4);
+
 async function startServer() {
   try {
     const app = express();
     app.use(express.json({ limit: '10mb' }));
     app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+    const encodeImageProxy = (url: string) => `${APP_ORIGIN}/api/image-proxy?url=${encodeURIComponent(url)}`;
+
+    const proxyPhotoList = (photos: any) => {
+      if (!Array.isArray(photos)) return [];
+      return photos
+        .filter((photo) => typeof photo === 'string' && photo.length > 0)
+        .map((photo) => encodeImageProxy(photo));
+    };
+
+    app.get('/api/image-proxy', async (req, res) => {
+      const url = typeof req.query.url === 'string' ? req.query.url : '';
+      if (!url) {
+        return res.status(400).send('Missing url');
+      }
+
+      try {
+        const response = await fetch(url, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (RoomieMatch)',
+            'Accept': 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8',
+          },
+        });
+
+        if (!response.ok || !response.body) {
+          throw new Error(`Upstream responded ${response.status}`);
+        }
+
+        const contentType = response.headers.get('content-type') || 'image/jpeg';
+        res.setHeader('Content-Type', contentType);
+        res.setHeader('Cache-Control', 'public, max-age=86400');
+
+        const buffer = Buffer.from(await response.arrayBuffer());
+        return res.status(200).send(buffer);
+      } catch (error) {
+        console.error('Image proxy failed:', url, error);
+        const svg = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+            <defs>
+              <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+                <stop offset="0%" stop-color="#f9f7f1"/>
+                <stop offset="100%" stop-color="#e3e0d8"/>
+              </linearGradient>
+            </defs>
+            <rect width="1200" height="900" fill="url(#g)"/>
+            <rect x="180" y="160" width="840" height="580" rx="28" fill="#ffffff" stroke="#1d3557" stroke-width="10" opacity="0.95"/>
+            <rect x="250" y="240" width="280" height="180" rx="18" fill="#d9d7d0"/>
+            <rect x="560" y="240" width="340" height="90" rx="18" fill="#c7d7e8"/>
+            <rect x="560" y="350" width="340" height="70" rx="18" fill="#f2ede4"/>
+            <rect x="250" y="460" width="650" height="140" rx="20" fill="#f2ede4"/>
+            <text x="600" y="705" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" fill="#1d3557">Imagen no disponible</text>
+            <text x="600" y="760" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#8d8c8a">RoomieMatch</text>
+          </svg>`;
+        res.setHeader('Content-Type', 'image/svg+xml');
+        res.setHeader('Cache-Control', 'public, max-age=3600');
+        return res.status(200).send(svg.trim());
+      }
+    });
 
     // Auth Middleware
     const authenticateToken = (req: any, res: any, next: any) => {
@@ -325,7 +516,7 @@ async function startServer() {
         } catch (e) {
           console.error("Error parsing photos for listing", l.id);
         }
-        return { ...l, photos };
+        return { ...l, photos: proxyPhotoList(photos) };
       }));
     } catch (error) {
       console.error("Error in GET /api/listings:", error);
@@ -360,7 +551,7 @@ async function startServer() {
         console.error("Error parsing photos for listing", listing.id);
       }
       
-      res.json({ ...listing, photos, ratings });
+      res.json({ ...listing, photos: proxyPhotoList(photos), ratings });
     } catch (error) {
       console.error("Error in GET /api/listings/:id:", error);
       res.status(500).json({ error: "Error al obtener el detalle" });

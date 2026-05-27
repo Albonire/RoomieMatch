@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>RoomieMatch · Informe Técnico de Avances (Sprint 2 & 3)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap');
+  
+  @page {
+    size: A4;
+    margin: 20mm;
+    background: #f5f4ed;
+    @bottom-center {
+      content: "Informe de Avances Técnicos · " counter(page);
+      font-family: 'Inter', sans-serif;
+      font-size: 8pt;
+      color: #6b6a64;
+    }
+  }
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --parchment: #f5f4ed;
+    --ivory:     #faf9f5;
+    --near-black:#141413;
+    --brand:     #1B365D;
+    --brand-light: #EEF2F7;
+    --stone:     #6b6a64;
+    --olive:     #504e49;
+    --border:    #e8e6dc;
+    --serif: Charter, Georgia, Palatino, "Times New Roman", serif;
+    --sans: 'Inter', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  body {
+    color: var(--near-black);
+    font-family: var(--serif);
+    font-size: 10.5pt;
+    line-height: 1.6;
+    background: var(--parchment);
+  }
+
+  .page { page-break-after: always; min-height: 250mm; }
+  .page:last-child { page-break-after: auto; }
+
+  /* ========== PORTADA ========== */
+  .cover-page {
+    height: 250mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+  }
+  .univ-header { margin-top: 40pt; }
+  .univ-name { font-family: var(--sans); font-weight: 700; font-size: 16pt; color: var(--brand); letter-spacing: 2pt; text-transform: uppercase; }
+  .dept-name { font-family: var(--sans); font-size: 10pt; color: var(--stone); margin-top: 6pt; text-transform: uppercase; }
+  
+  .project-hero { margin: 80pt 0; }
+  .project-title { font-size: 52pt; font-weight: 500; letter-spacing: -1.5pt; }
+  .project-title span { font-style: italic; color: var(--brand); }
+  .report-label { font-family: var(--sans); font-size: 14pt; color: var(--olive); margin-top: 15pt; letter-spacing: 3pt; text-transform: uppercase; }
+
+  .authors-box {
+    text-align: left;
+    max-width: 420pt;
+    margin: 0 auto;
+    font-family: var(--sans);
+    padding: 30pt;
+    background: var(--ivory);
+    border: 0.5pt solid var(--border);
+    display: grid;
+    grid-template-columns: 120pt 1fr;
+    gap: 12pt;
+  }
+  .author-label { font-weight: 700; color: var(--brand); font-size: 8.5pt; text-transform: uppercase; letter-spacing: 1pt; }
+
+  /* ========== CONTENT ========== */
+  .header-main { border-left: 4pt solid var(--brand); padding-left: 15pt; margin-bottom: 25pt; }
+  .eyebrow { font-family: var(--sans); font-size: 9pt; color: var(--brand); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5pt; }
+  h1 { font-size: 28pt; font-weight: 500; margin: 4pt 0; }
+  
+  h2 { font-family: var(--sans); font-size: 17pt; font-weight: 600; color: var(--brand); margin: 25pt 0 12pt 0; border-bottom: 1pt solid var(--border); padding-bottom: 5pt; }
+  h3 { font-family: var(--sans); font-size: 12pt; font-weight: 600; margin: 18pt 0 8pt 0; }
+
+  .diagram-container {
+    background: var(--ivory);
+    border: 0.5pt solid var(--border);
+    padding: 15pt;
+    margin: 20pt 0;
+    border-radius: 3pt;
+  }
+  .caption { font-family: var(--sans); font-size: 8.5pt; color: var(--stone); text-align: center; margin-top: 8pt; font-style: italic; }
+
+  p { margin-bottom: 10pt; text-align: justify; }
+  .hl { color: var(--brand); font-weight: 600; }
+  code { font-family: var(--mono); background: rgba(0,0,0,0.05); padding: 1pt 3pt; border-radius: 2pt; font-size: 90%; }
+
+  ul.check { list-style: none; margin-bottom: 15pt; }
+  ul.check li { position: relative; padding-left: 18pt; margin-bottom: 6pt; }
+  ul.check li::before { content: "✓"; position: absolute; left: 0; color: #059669; font-weight: 900; }
+
+  .footer { border-top: 0.5pt solid var(--border); padding-top: 10pt; margin-top: 30pt; font-family: var(--sans); font-size: 8pt; color: var(--stone); display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+
+<!-- PÁGINA 1: PORTADA -->
+<div class="page cover-page">
+  <div class="univ-header">
+    <div class="univ-name">Universidad de Pamplona</div>
+    <div class="dept-name">Facultad de Ingenierías y Arquitectura<br>Ingeniería de Sistemas</div>
+  </div>
+
+  <div class="project-hero">
+    <div class="project-title">Roomie<span>Match</span></div>
+    <div class="report-label">Informe de Avances Técnicos</div>
+    <div style="font-family: var(--sans); font-size: 10pt; color: var(--stone); margin-top: 15pt; letter-spacing: 2pt;">CONSOLIDADO SPRINT 2 Y SPRINT 3</div>
+  </div>
+
+  <div class="authors-box">
+    <div class="author-label">Proyecto</div>
+    <div class="academic-value">Plataforma Relacional de Co-vivienda Universitaria</div>
+
+    <div class="author-label">Materia</div>
+    <div class="academic-value">Proyecto Integrador</div>
+
+    <div class="author-label">Integrantes</div>
+    <div class="academic-value">
+      Anderson Fabian González<br>
+      Ivan Piñeres Lopes<br>
+      Jhon Duque
+    </div>
+
+    <div class="author-label">Profesor</div>
+    <div class="academic-value">Avilio Villamizar</div>
+
+    <div class="author-label">Fecha</div>
+    <div class="academic-value">7 de Mayo de 2026</div>
+  </div>
+
+  <div style="margin-bottom: 40pt; font-family: var(--sans); font-size: 9pt; color: var(--stone);">
+    Pamplona, Colombia
+  </div>
+</div>
+
+<!-- PÁGINA 2: SPRINT 2 - CORE OPERACIONAL -->
+<div class="page">
+  <div class="header-main">
+    <div class="eyebrow">Módulo I · Gestión y Geozonificación</div>
+    <h1>Sprint 2: Lógica Habitacional</h1>
+  </div>
+
+  <p>
+    El Sprint 2 se centró en la transición del sistema hacia un modelo operativo capaz de gestionar la oferta y demanda de vivienda en la ciudad de Pamplona. Se implementó el ciclo de vida completo de las publicaciones (CRUD) y la infraestructura geoespacial necesaria para garantizar la seguridad de los estudiantes.
+  </p>
+
+  <h2>1.1 Diagrama de Casos de Uso (Core)</h2>
+  <div class="diagram-container">
+    <svg viewBox="0 0 800 350" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100%" height="100%" fill="#faf9f5"/>
+      <!-- Actors -->
+      <g transform="translate(60, 120)">
+        <circle cx="20" cy="20" r="12" fill="none" stroke="#141413" stroke-width="1.2"/>
+        <path d="M 20 32 L 20 60 M 5 40 L 35 40 M 20 60 L 10 80 M 20 60 L 30 80" stroke="#141413" stroke-width="1.2"/>
+        <text x="20" y="100" text-anchor="middle" font-size="9" font-family="sans-serif">Estudiante</text>
+      </g>
+
+      <!-- System -->
+      <rect x="180" y="30" width="440" height="280" rx="8" fill="white" stroke="#6b6a64" stroke-width="0.8" stroke-dasharray="4 2"/>
+      
+      <!-- Use Cases -->
+      <ellipse cx="400" cy="80" rx="90" ry="22" fill="#fff" stroke="#1B365D" stroke-width="1"/>
+      <text x="400" y="84" text-anchor="middle" font-size="10" font-family="sans-serif">Crear Publicación Vivienda</text>
+
+      <ellipse cx="400" cy="150" rx="90" ry="22" fill="#EEF2F7" stroke="#1B365D" stroke-width="1.5"/>
+      <text x="400" y="154" text-anchor="middle" font-size="10" font-family="sans-serif" font-weight="600">Visualizar Zonas de Riesgo</text>
+
+      <ellipse cx="400" cy="220" rx="90" ry="22" fill="#fff" stroke="#1B365D" stroke-width="1"/>
+      <text x="400" y="224" text-anchor="middle" font-size="10" font-family="sans-serif">Filtrar por Precio/Zona</text>
+
+      <ellipse cx="400" cy="285" rx="90" ry="20" fill="#fff" stroke="#1B365D" stroke-width="1"/>
+      <text x="400" y="289" text-anchor="middle" font-size="9" font-family="sans-serif">Calificar Roommate/Inmueble</text>
+
+      <!-- Connections -->
+      <line x1="100" y1="160" x2="310" y2="80" stroke="#141413" stroke-width="0.7"/>
+      <line x1="100" y1="165" x2="310" y2="150" stroke="#1B365D" stroke-width="1.2"/>
+      <line x1="100" y1="170" x2="310" y2="220" stroke="#141413" stroke-width="0.7"/>
+    </svg>
+    <div class="caption">Figura 1. Modelo de interacciones para la gestión de vivienda y mapas de seguridad.</div>
+  </div>
+
+  <h2>1.2 Integración GIS (Leaflet + GeoJSON)</h2>
+  <p>
+    Se ha integrado la librería <span class="hl">React-Leaflet</span> para representar cartográficamente los sectores de Pamplona. La base de datos SQLite almacena los polígonos de los barrios en formato GeoJSON, permitiendo:
+  </p>
+  <ul class="check">
+    <li><strong>Zonificación Dinámica:</strong> Representación de niveles de riesgo (Verde, Amarillo, Rojo) basada en datos históricos de seguridad.</li>
+    <li><strong>Geolocalización:</strong> Uso de <code>useMapEvents</code> para que el usuario asigne la ubicación exacta de su inmueble mediante un marcador.</li>
+  </ul>
+
+  <h2>1.3 Algoritmo de Coincidencias (Version 1.0)</h2>
+  <p>
+    El motor de matching básico calcula un <span class="hl">Afinity Score</span> comparando atributos categóricos de convivencia. El cálculo se realiza mediante una intersección de conjuntos de hábitos (Fumar, Mascotas, Ruido, Horarios) con una complejidad temporal de <code>O(N)</code>.
+  </p>
+</div>
+
+<!-- PÁGINA 3: SPRINT 3 - REFINAMIENTO Y IA -->
+<div class="page">
+  <div class="header-main">
+    <div class="eyebrow">Módulo II · Administración y Refinamiento</div>
+    <h1>Sprint 3: Perfiles y Gobernanza</h1>
+  </div>
+
+  <p>
+    El Sprint 3 se enfocó en cerrar el ciclo de confianza del sistema mediante herramientas administrativas y la preparación para análisis de datos avanzado. Se implementó el dashboard de control y se integró la infraestructura base para futuros servicios de Inteligencia Artificial.
+  </p>
+
+  <h2>2.1 Diagrama de Secuencia: Verificación de Usuario</h2>
+  <div class="diagram-container">
+    <svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100%" height="100%" fill="#faf9f5"/>
+      <!-- Lines -->
+      <line x1="150" y1="50" x2="150" y2="260" stroke="#6b6a64" stroke-dasharray="4 2"/>
+      <line x1="400" y1="50" x2="400" y2="260" stroke="#6b6a64" stroke-dasharray="4 2"/>
+      <line x1="650" y1="50" x2="650" y2="260" stroke="#6b6a64" stroke-dasharray="4 2"/>
+      
+      <!-- Box Labels -->
+      <rect x="100" y="20" width="100" height="30" rx="4" fill="#1B365D" stroke="#1B365D"/>
+      <text x="150" y="40" text-anchor="middle" fill="white" font-size="9" font-family="sans-serif">Admin View</text>
+      <rect x="350" y="20" width="100" height="30" rx="4" fill="#EEF2F7" stroke="#1B365D"/>
+      <text x="400" y="40" text-anchor="middle" fill="#1B365D" font-size="9" font-family="sans-serif">Backend API</text>
+      <rect x="600" y="20" width="100" height="30" rx="4" fill="#f5f4ed" stroke="#6b6a64"/>
+      <text x="650" y="40" text-anchor="middle" fill="#141413" font-size="9" font-family="sans-serif">SQLite DB</text>
+
+      <!-- Messages -->
+      <path d="M 150 100 L 400 100" stroke="#141413" stroke-width="1.2" marker-end="url(#arr)"/>
+      <text x="275" y="95" text-anchor="middle" font-size="8" font-family="monospace">POST /api/admin/verify/:id</text>
+
+      <path d="M 400 130 L 650 130" stroke="#1B365D" stroke-width="1" marker-end="url(#arr-b)"/>
+      <text x="525" y="125" text-anchor="middle" font-size="8" font-family="monospace">UPDATE users SET is_verified=1</text>
+
+      <path d="M 650 180 L 400 180" stroke="#6b6a64" stroke-width="0.8" marker-end="url(#arr-c)"/>
+      <text x="525" y="175" text-anchor="middle" font-size="8" font-family="monospace">SQL_SUCCESS</text>
+
+      <path d="M 400 220 L 150 220" stroke="#1B365D" stroke-width="1.2" marker-end="url(#arr-b)"/>
+      <text x="275" y="215" text-anchor="middle" font-size="8" font-family="monospace">JSON {success: true}</text>
+
+      <defs>
+        <marker id="arr" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#141413"/></marker>
+        <marker id="arr-b" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#1B365D"/></marker>
+        <marker id="arr-c" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#6b6a64"/></marker>
+      </defs>
+    </svg>
+    <div class="caption">Figura 2. Flujo de verificación manual de usuarios por parte del rol administrador.</div>
+  </div>
+
+  <h2>2.2 Integración de Infraestructura Gemini AI</h2>
+  <p>
+    A diferencia de una implementación puramente basada en reglas, en el Sprint 3 se ha <span class="hl">integrado la arquitectura de Google Generative AI</span> (SDK <code>@google/genai</code>) como base para el procesamiento de lenguaje natural.
+  </p>
+  <div class="tech-card">
+    <h4>Avance de Integración:</h4>
+    <p>Se ha configurado el "scaffolding" necesario en <code>vite.config.ts</code> y las variables de entorno para consumir la API de Gemini. Esto permite que el sistema ya cuente con la capacidad técnica de:</p>
+    <ul class="check">
+      <li>Analizar descripciones de viviendas para extraer reglas implícitas.</li>
+      <li>Generar resúmenes inteligentes de perfiles para el matching.</li>
+      <li>Validar la coherencia de los comentarios y ratings mediante modelos de lenguaje.</li>
+    </ul>
+  </div>
+
+  <h2>2.3 Gobernanza y Administración</h2>
+  <p>
+    Se implementó la ruta <code>/admin</code> protegida por privilegios de correo institucional administrativo. Desde este panel se gestiona la lista completa de usuarios y se otorga el "check" de verificación, elemento vital para la reputación de la plataforma.
+  </p>
+
+  <div class="footer">
+    <span>© 2026 RoomieMatch · Proyecto Integrador</span>
+    <span>SOPORTE: Anderson González, Iván Piñeres, Jhon Duque</span>
+  </div>
+</div>
+
+</body>
+</html>
