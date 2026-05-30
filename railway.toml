@@ -1,0 +1,8 @@
+[build]
+builder = "nixpacks"
+buildCommand = "npm install"
+
+[deploy]
+startCommand = "npx tsx server.ts"
+healthcheckPath = "/api/zones"
+restartPolicyType = "on_failure"    
