@@ -60,6 +60,7 @@ export default function ListingDetail() {
   const { id } = useParams();
   const { user, token } = useAuth();
   const [listing, setListing] = useState<Listing | null>(null);
+  const [loading, setLoading] = useState(true);
   const [newRating, setNewRating] = useState({ stars: 5, comment: '' });
   const [error, setError] = useState('');
 
@@ -68,19 +69,34 @@ export default function ListingDetail() {
   }, [id]);
 
   const fetchListing = async () => {
+    setLoading(true);
+    setError('');
     try {
       const res = await fetch(`/api/listings/${id}`);
       const text = await res.text();
       const data = text ? JSON.parse(text) : null;
-      if (data) setListing(data);
+      if (!res.ok) {
+        setListing(null);
+        setError(data?.error || 'Publicación no encontrada');
+        return;
+      }
+      setListing(data);
     } catch (e) {
       console.error('Error fetching listing:', e);
+      setListing(null);
+      setError('Error al cargar la publicación');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleRate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!token) return;
+    if (!newRating.comment.trim()) {
+      setError('El comentario es obligatorio');
+      return;
+    }
     try {
       const res = await fetch(`/api/listings/${id}/rate`, {
         method: 'POST',
@@ -103,7 +119,7 @@ export default function ListingDetail() {
     }
   };
 
-  if (!listing) return (
+  if (loading) return (
     <div className="flex items-center justify-center py-32">
       <div className="flex flex-col items-center space-y-4 opacity-60">
         <div className="w-10 h-10 border-2 border-editorial-secondary border-t-editorial-ink rounded-full animate-spin"></div>
@@ -112,8 +128,25 @@ export default function ListingDetail() {
     </div>
   );
 
-  const avgRating = listing.ratings.length > 0
-    ? (listing.ratings.reduce((acc, r) => acc + r.stars, 0) / listing.ratings.length).toFixed(1)
+  if (!listing) {
+    return (
+      <div className="max-w-2xl mx-auto py-24 text-center space-y-6">
+        <div className="space-y-2">
+          <h1 className="text-4xl font-display font-medium text-editorial-ink">Publicación no disponible</h1>
+          <p className="text-editorial-tertiary font-sans">{error || 'La publicación fue eliminada o nunca existió.'}</p>
+        </div>
+        <Link to="/" className="inline-flex items-center editorial-button">
+          Volver al inicio
+        </Link>
+      </div>
+    );
+  }
+
+  const photos = Array.isArray(listing.photos) ? listing.photos : [];
+  const ratings = Array.isArray(listing.ratings) ? listing.ratings : [];
+
+  const avgRating = ratings.length > 0
+    ? (ratings.reduce((acc, r) => acc + r.stars, 0) / ratings.length).toFixed(1)
     : null;
 
   const getSafetyStyle = (level: string) => {
@@ -131,7 +164,7 @@ export default function ListingDetail() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 rounded-sm overflow-hidden">
         <div className="md:col-span-2 aspect-video overflow-hidden">
           <img 
-            src={listing.photos[0] || 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=1200&q=80'} 
+            src={photos[0] || 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=1200&q=80'} 
             alt="" 
             className="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.02]" 
             referrerPolicy="no-referrer" 
@@ -141,14 +174,14 @@ export default function ListingDetail() {
           {[1, 2].map((idx) => (
             <div key={idx} className="aspect-square overflow-hidden">
               <img 
-                src={listing.photos[idx] || `https://images.unsplash.com/photo-${['7pCFUybP_P8', 'i9Lp1hd5M-c'][idx-1]}?w=600&q=80`} 
+                src={photos[idx] || `https://images.unsplash.com/photo-${['7pCFUybP_P8', 'i9Lp1hd5M-c'][idx-1]}?w=600&q=80`} 
                 alt="" 
                 className="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.02]" 
                 referrerPolicy="no-referrer" 
               />
             </div>
           ))}
-          {listing.photos.length < 2 && <div className="bg-editorial-secondary/20 flex items-center justify-center text-editorial-tertiary font-sans text-xs">No hay más fotos</div>}
+          {photos.length < 2 && <div className="bg-editorial-secondary/20 flex items-center justify-center text-editorial-tertiary font-sans text-xs">No hay más fotos</div>}
         </div>
       </div>
 
@@ -242,6 +275,7 @@ export default function ListingDetail() {
                   placeholder="Comparte tu experiencia..."
                   value={newRating.comment}
                   onChange={e => setNewRating({ ...newRating, comment: e.target.value })}
+                  required
                   className="editorial-input min-h-[120px] border border-editorial-secondary rounded-sm p-4"
                 />
                 {error && <p className="text-rose-600 font-sans text-xs">{error}</p>}

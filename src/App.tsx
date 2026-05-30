@@ -44,14 +44,33 @@ const Navbar = () => {
   return (
     <nav className="bg-editorial-bg/90 backdrop-blur-md border-b border-editorial-secondary sticky top-0 z-[1001]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-20 items-center">
-          <div className="flex items-center">
+        <div className="flex flex-col gap-3 py-4 lg:flex-row lg:justify-between lg:items-center lg:h-20">
+          <div className="flex items-center justify-between gap-4">
             <Link to="/" className="flex-shrink-0 flex items-center group">
-              <span className="text-3xl font-display font-medium text-editorial-ink tracking-tight transition-colors group-hover:text-editorial-accent">
+              <span className="text-2xl sm:text-3xl font-display font-medium text-editorial-ink tracking-tight transition-colors group-hover:text-editorial-accent">
                 Roomie<span className="italic">Match</span>
               </span>
             </Link>
-            <div className="hidden lg:ml-12 lg:flex lg:space-x-8">
+            <div className="lg:hidden flex items-center gap-3">
+              <button
+                onClick={toggleDark}
+                className="p-2 rounded-full border border-editorial-secondary/50 text-editorial-tertiary hover:text-editorial-ink hover:border-editorial-secondary transition-all cursor-pointer"
+                aria-label={dark ? 'Modo claro' : 'Modo oscuro'}
+              >
+                {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              </button>
+              {user ? (
+                <>
+                  {user.email === 'admin@unipamplona.edu.co' && (
+                    <Link to="/admin" className="text-editorial-tertiary hover:text-editorial-ink transition-colors">
+                      <ShieldCheck className="w-5 h-5 stroke-[1.5]" />
+                    </Link>
+                  )}
+                </>
+              ) : null}
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 lg:ml-12">
               <Link to="/" className="inline-flex items-center text-[11px] font-sans font-medium uppercase tracking-[0.15em] text-editorial-tertiary hover:text-editorial-ink transition-colors">
                 Publicaciones
               </Link>
@@ -69,8 +88,7 @@ const Navbar = () => {
                 </>
               )}
             </div>
-          </div>
-          <div className="flex items-center space-x-6">
+          <div className="hidden lg:flex items-center space-x-6">
             {/* Dark mode toggle */}
             <button
               onClick={toggleDark}

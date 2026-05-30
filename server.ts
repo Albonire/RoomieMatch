@@ -9,9 +9,12 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const db = new Database("roomiematch.db");
+const DB_PATH = process.env.DB_PATH || "roomiematch.db";
+const db = new Database(DB_PATH);
 const JWT_SECRET = process.env.JWT_SECRET || "roomie-secret-key-123";
-const APP_ORIGIN = `http://0.0.0.0:3000`;
+if (process.env.NODE_ENV === "production" && !process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET is required in production");
+}
 
 // Extend Express Request
 declare global {
@@ -366,7 +369,7 @@ async function startServer() {
     app.use(express.json({ limit: '10mb' }));
     app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-    const encodeImageProxy = (url: string) => `${APP_ORIGIN}/api/image-proxy?url=${encodeURIComponent(url)}`;
+    const encodeImageProxy = (url: string) => `/api/image-proxy?url=${encodeURIComponent(url)}`;
 
     const proxyPhotoList = (photos: any) => {
       if (!Array.isArray(photos)) return [];
@@ -560,10 +563,51 @@ async function startServer() {
 
   app.post("/api/listings", authenticateToken, (req, res) => {
     const { title, description, address, price, available_from, max_occupants, photos, rules, zone_id, lat, lng } = req.body;
+
+    const normalizedTitle = typeof title === "string" ? title.trim() : "";
+    const normalizedDescription = typeof description === "string" ? description.trim() : "";
+    const normalizedAddress = typeof address === "string" ? address.trim() : "";
+    const normalizedRules = typeof rules === "string" ? rules.trim() : "";
+    const numericPrice = Number(price);
+    const numericOccupants = Number(max_occupants);
+    const numericZoneId = Number(zone_id);
+    const numericLat = Number(lat);
+    const numericLng = Number(lng);
+    const parsedDate = typeof available_from === "string" ? new Date(`${available_from}T00:00:00`) : new Date("invalid");
+    const normalizedPhotos = Array.isArray(photos)
+      ? photos.map((photo: unknown) => typeof photo === "string" ? photo.trim() : "").filter((photo: string) => photo.length > 0)
+      : [];
+
+    if (!normalizedTitle) return res.status(400).json({ error: "El título es obligatorio" });
+    if (!normalizedDescription) return res.status(400).json({ error: "La descripción es obligatoria" });
+    if (!normalizedAddress) return res.status(400).json({ error: "La dirección es obligatoria" });
+    if (!Number.isFinite(numericPrice) || numericPrice <= 0) return res.status(400).json({ error: "El precio debe ser un número mayor a 0" });
+    if (!Number.isInteger(numericOccupants) || numericOccupants < 1) return res.status(400).json({ error: "Los ocupantes máximos deben ser al menos 1" });
+    if (!available_from || Number.isNaN(parsedDate.getTime())) return res.status(400).json({ error: "La fecha disponible no es válida" });
+    if (!Number.isInteger(numericZoneId)) return res.status(400).json({ error: "La zona es obligatoria" });
+    if (!db.prepare("SELECT id FROM zones WHERE id = ?").get(numericZoneId)) return res.status(400).json({ error: "La zona seleccionada no existe" });
+    if (!Number.isFinite(numericLat) || !Number.isFinite(numericLng)) return res.status(400).json({ error: "La ubicación en el mapa no es válida" });
+    if (normalizedPhotos.some((photo: string) => !/^https?:\/\//i.test(photo) && !photo.startsWith("/api/image-proxy?url=") && !photo.startsWith("data:image/"))) {
+      return res.status(400).json({ error: "Las fotos deben ser URLs válidas" });
+    }
+
     const result = db.prepare(`
       INSERT INTO listings (user_id, title, description, address, price, available_from, max_occupants, photos, rules, zone_id, lat, lng)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(req.user.id, title, description, address, price, available_from, max_occupants, JSON.stringify(photos), rules, zone_id, lat, lng);
+    `).run(
+      req.user.id,
+      normalizedTitle,
+      normalizedDescription,
+      normalizedAddress,
+      numericPrice,
+      available_from,
+      numericOccupants,
+      JSON.stringify(normalizedPhotos),
+      normalizedRules,
+      numericZoneId,
+      numericLat,
+      numericLng
+    );
     res.json({ id: result.lastInsertRowid });
   });
 
@@ -584,9 +628,19 @@ async function startServer() {
   // Ratings
   app.post("/api/listings/:id/rate", authenticateToken, (req, res) => {
     const { stars, comment } = req.body;
+    const numericStars = Number(stars);
+    const normalizedComment = typeof comment === "string" ? comment.trim() : "";
+
+    if (!Number.isInteger(numericStars) || numericStars < 1 || numericStars > 5) {
+      return res.status(400).json({ error: "Las estrellas deben estar entre 1 y 5" });
+    }
+    if (!normalizedComment) {
+      return res.status(400).json({ error: "El comentario es obligatorio" });
+    }
+
     try {
       db.prepare("INSERT INTO ratings (listing_id, user_id, stars, comment) VALUES (?, ?, ?, ?)")
-        .run(req.params.id, req.user.id, stars, comment);
+        .run(req.params.id, req.user.id, numericStars, normalizedComment);
       res.json({ success: true });
     } catch (e) {
       res.status(400).json({ error: "Ya has calificado esta publicación" });
@@ -676,7 +730,7 @@ async function startServer() {
     });
   }
 
-  const PORT = 3000;
+  const PORT = Number(process.env.PORT || 3000);
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on http://0.0.0.0:${PORT}`);
   });

@@ -45,6 +45,8 @@ export default function CreateListing() {
   });
   const [error, setError] = useState('');
 
+  const today = new Date().toISOString().slice(0, 10);
+
   useEffect(() => {
     fetchZones();
   }, []);
@@ -60,10 +62,37 @@ export default function CreateListing() {
     e.preventDefault();
     setError('');
 
+    if (!form.title.trim() || !form.description.trim() || !form.address.trim()) {
+      setError('Completa los campos obligatorios');
+      return;
+    }
+
+    const price = Number(form.price);
+    const maxOccupants = Number(form.max_occupants);
+    if (!Number.isFinite(price) || price <= 0) {
+      setError('El precio debe ser mayor a 0');
+      return;
+    }
+
+    if (!Number.isInteger(maxOccupants) || maxOccupants < 1) {
+      setError('Los ocupantes máximos deben ser al menos 1');
+      return;
+    }
+
+    if (!form.available_from) {
+      setError('Selecciona una fecha válida');
+      return;
+    }
+
+    if (!form.zone_id) {
+      setError('Selecciona una zona');
+      return;
+    }
+
     const payload = {
       ...form,
-      price: parseFloat(form.price),
-      max_occupants: parseInt(form.max_occupants),
+      price,
+      max_occupants: maxOccupants,
       photos: form.photos.split(',').map(p => p.trim()).filter(p => p !== ''),
       zone_id: parseInt(form.zone_id),
       lat: position[0],
@@ -121,6 +150,8 @@ export default function CreateListing() {
                     type="number"
                     placeholder="400000"
                     required
+                    min="1"
+                    step="1"
                     value={form.price}
                     onChange={e => setForm({ ...form, price: e.target.value })}
                     className="editorial-input pl-7"
@@ -167,6 +198,7 @@ export default function CreateListing() {
                   <input
                     type="date"
                     required
+                    min={today}
                     value={form.available_from}
                     onChange={e => setForm({ ...form, available_from: e.target.value })}
                     className="editorial-input pl-7"
