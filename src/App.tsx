@@ -60,14 +60,24 @@ const Navbar = () => {
                 {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
               </button>
               {user ? (
-                <>
+                <div className="flex items-center gap-3">
                   {user.email === 'admin@unipamplona.edu.co' && (
                     <Link to="/admin" className="text-editorial-tertiary hover:text-editorial-ink transition-colors">
                       <ShieldCheck className="w-5 h-5 stroke-[1.5]" />
                     </Link>
                   )}
-                </>
-              ) : null}
+                  <Link to="/profile" className="text-editorial-tertiary hover:text-editorial-ink transition-colors" aria-label="Mi Perfil">
+                    <User className="w-5 h-5 stroke-[1.5]" />
+                  </Link>
+                  <button onClick={logout} className="text-editorial-tertiary hover:text-editorial-accent transition-colors cursor-pointer" aria-label="Cerrar sesion">
+                    <LogOut className="w-5 h-5 stroke-[1.5]" />
+                  </button>
+                </div>
+              ) : (
+                <Link to="/auth" className="editorial-btn editorial-btn-primary text-xs px-4 py-2">
+                  Entrar
+                </Link>
+              )}
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 lg:ml-12">
