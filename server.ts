@@ -440,6 +440,18 @@ async function startServer() {
       });
     };
 
+  // --- DEBUG ROUTES ---
+  app.get("/api/debug/db", (req, res) => {
+    try {
+      const userCount = (db.prepare("SELECT COUNT(*) as count FROM users").get() as any).count;
+      const listingCount = (db.prepare("SELECT COUNT(*) as count FROM listings").get() as any).count;
+      const zoneCount = (db.prepare("SELECT COUNT(*) as count FROM zones").get() as any).count;
+      res.json({ users: userCount, listings: listingCount, zones: zoneCount });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
   // --- API ROUTES ---
 
   // Auth
