@@ -458,11 +458,6 @@ async function startServer() {
   app.post("/api/auth/register", (req, res) => {
     const { name, email, password, university, photo_url } = req.body;
     
-    // Restrict email domain
-    if (!email.endsWith("@unipamplona.edu.co")) {
-      return res.status(400).json({ error: "Solo se permiten correos @unipamplona.edu.co" });
-    }
-
     const hashedPassword = bcrypt.hashSync(password, 10);
     try {
       const result = db.prepare("INSERT INTO users (name, email, password_hash, university, photo_url) VALUES (?, ?, ?, ?, ?)").run(name, email, hashedPassword, university, photo_url);

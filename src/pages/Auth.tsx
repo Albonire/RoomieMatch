@@ -98,10 +98,10 @@ export default function Auth() {
   };
 
   return (
-    <div className="max-w-md mx-auto py-16">
-      <div className="editorial-card p-12 space-y-10">
+    <div className="max-w-md mx-4 md:mx-auto py-8 md:py-16">
+      <div className="editorial-card p-6 md:p-12 space-y-10">
         <div className="text-center space-y-4">
-          <h1 className="text-4xl font-display font-medium tracking-tight leading-none text-editorial-ink">
+          <h1 className="text-3xl md:text-4xl font-display font-medium tracking-tight leading-none text-editorial-ink">
             {isLogin ? 'Bienvenido' : 'Únete a la'} <br />
             <span className="text-editorial-accent italic">Comunidad</span>
           </h1>
@@ -116,10 +116,10 @@ export default function Auth() {
               <div className="flex justify-center mb-8">
                 {form.photo_url ? (
                   <div className="p-1 border border-editorial-secondary rounded-full shadow-sm">
-                    <Avatar photoUrl={form.photo_url} className="w-24 h-24 rounded-full" iconClassName="w-12 h-12" />
+                    <Avatar photoUrl={form.photo_url} className="w-20 h-20 md:w-24 md:h-24 rounded-full" iconClassName="w-10 h-10 md:w-12 md:h-12" />
                   </div>
                 ) : (
-                  <div className="w-24 h-24 border border-dashed border-editorial-secondary rounded-full flex items-center justify-center font-sans text-[11px] text-editorial-tertiary text-center p-4">
+                  <div className="w-20 h-20 md:w-24 md:h-24 border border-dashed border-editorial-secondary rounded-full flex items-center justify-center font-sans text-[11px] text-editorial-tertiary text-center p-4">
                     Sin Foto
                   </div>
                 )}
@@ -159,7 +159,7 @@ export default function Auth() {
                 <label className="editorial-label flex items-center">
                   <ImageIcon className="w-3.5 h-3.5 mr-2 text-editorial-tertiary" /> Elige un Avatar
                 </label>
-                <div className="grid grid-cols-6 gap-2">
+                <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
                   {AVATARS.map(avatar => (
                     <button
                       key={avatar.id}
@@ -205,12 +205,12 @@ export default function Auth() {
           )}
 
           <div>
-            <label className="editorial-label">Correo Institucional (@unipamplona.edu.co)</label>
+            <label className="editorial-label">Correo Electrónico</label>
             <div className="relative">
               <Mail className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 text-editorial-tertiary" />
               <input
                 type="email"
-                placeholder="usuario@unipamplona.edu.co"
+                placeholder="usuario@ejemplo.com"
                 required
                 value={form.email}
                 onChange={e => setForm({ ...form, email: e.target.value })}
