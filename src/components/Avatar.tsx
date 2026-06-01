@@ -33,9 +33,6 @@ const AVATAR_ICONS: Record<string, any> = {
   headphones: Headphones
 };
 
-const DEFAULT_FEMALE_AVATAR =
-  'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop';
-
 interface AvatarProps {
   photoUrl?: string;
   className?: string;
@@ -69,12 +66,9 @@ export default function Avatar({ photoUrl, className = "w-10 h-10 border border-
 
   if (!resolvedSrc || imageError) {
     return (
-      <img
-        src={DEFAULT_FEMALE_AVATAR}
-        alt="Avatar femenino"
-        className={`${className} object-cover`}
-        referrerPolicy="no-referrer"
-      />
+      <div className={`${className} bg-editorial-secondary/40 dark:bg-editorial-secondary/20 flex items-center justify-center text-editorial-tertiary overflow-hidden`}>
+        <UserIcon className={iconClassName} />
+      </div>
     );
   }
 

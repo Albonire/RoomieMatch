@@ -153,17 +153,17 @@ const seedData = (force = false) => {
     const hashedPassword = bcrypt.hashSync("password123", 10);
     
     const usersData = [
-      ["Fabian Garcia", "fabian@example.com", hashedPassword, "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop", "Universidad de Pamplona", "Estudiante de ingeniería, busco roomie tranquilo y responsable.", 1, JSON.stringify({ schedule: "morning", noise: "low", pets: "no", smoking: "no", study: "quiet" })],
-      ["Diana Prince", "diana@unipamplona.edu.co", hashedPassword, "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop", "Universidad de Pamplona", "Estudiante de arquitectura, muy organizada y amante del café.", 1, JSON.stringify({ schedule: "morning", noise: "low", pets: "no", smoking: "no", study: "quiet" })],
-      ["Carlos Mendoza", "carlos@gmail.com", hashedPassword, "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop", "Universidad de Pamplona", "Busco compartir gastos en un lugar cerca al campus. Soy muy sociable.", 0, JSON.stringify({ schedule: "night", noise: "medium", pets: "yes", smoking: "no", study: "social" })],
-      ["Valentina Rojas", "valentina@outlook.com", hashedPassword, "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop", "Universidad de Pamplona", "Estudiante de medicina, paso poco tiempo en casa por las rotaciones.", 1, JSON.stringify({ schedule: "morning", noise: "low", pets: "no", smoking: "no", study: "quiet" })],
-      ["Mateo Jimenez", "mateo@yahoo.com", hashedPassword, "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop", "Universidad de Pamplona", "Me gusta cocinar y el buen ambiente. Busco roomie buena onda.", 1, JSON.stringify({ schedule: "flexible", noise: "medium", pets: "yes", smoking: "no", study: "social" })],
-      ["Isabella Castro", "isabella@gmail.com", hashedPassword, "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=400&fit=crop", "Universidad de Pamplona", "Busco un lugar tranquilo para terminar mi tesis de derecho.", 1, JSON.stringify({ schedule: "morning", noise: "low", pets: "no", smoking: "no", study: "quiet" })],
-      ["Santiago Ortiz", "santiago@unipamplona.edu.co", hashedPassword, "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop", "Universidad de Pamplona", "Deportista, busco roomie con hábitos saludables y ordenado.", 0, JSON.stringify({ schedule: "morning", noise: "low", pets: "no", smoking: "no", study: "quiet" })],
-      ["Camila Duarte", "camila@gmail.com", hashedPassword, "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=400&fit=crop", "Universidad de Pamplona", "Estudiante de artes, busco un espacio creativo y relajado.", 1, JSON.stringify({ schedule: "night", noise: "medium", pets: "yes", smoking: "yes", study: "social" })],
-      ["Sebastian Peña", "sebas@gmail.com", hashedPassword, "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=400&h=400&fit=crop", "Universidad de Pamplona", "Gamer y programador. Busco internet rápido y buena vibra.", 0, JSON.stringify({ schedule: "night", noise: "medium", pets: "no", smoking: "no", study: "quiet" })],
-      ["Mariana Lopez", "mariana@gmail.com", hashedPassword, "https://images.unsplash.com/photo-1488423191216-2fdc41e1b2d5?w=400&h=400&fit=crop", "Universidad de Pamplona", "Muy tranquila, me gusta leer y el silencio para estudiar.", 1, JSON.stringify({ schedule: "morning", noise: "low", pets: "no", smoking: "no", study: "quiet" })],
-      ["Admin User", "admin@unipamplona.edu.co", hashedPassword, "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop", "Sistema", "Administrador de la Plataforma", 1, null]
+      ["Fabian Garcia", "fabian@example.com", hashedPassword, "https://randomuser.me/api/portraits/men/32.jpg", "Universidad de Pamplona", "Estudiante de ingeniería, busco roomie tranquilo y responsable.", 1, JSON.stringify({ schedule: "morning", noise: "low", pets: "no", smoking: "no", study: "quiet" })],
+      ["Diana Prince", "diana@unipamplona.edu.co", hashedPassword, "https://randomuser.me/api/portraits/women/44.jpg", "Universidad de Pamplona", "Estudiante de arquitectura, muy organizada y amante del café.", 1, JSON.stringify({ schedule: "morning", noise: "low", pets: "no", smoking: "no", study: "quiet" })],
+      ["Carlos Mendoza", "carlos@gmail.com", hashedPassword, "https://randomuser.me/api/portraits/men/75.jpg", "Universidad de Pamplona", "Busco compartir gastos en un lugar cerca al campus. Soy muy sociable.", 0, JSON.stringify({ schedule: "night", noise: "medium", pets: "yes", smoking: "no", study: "social" })],
+      ["Valentina Rojas", "valentina@outlook.com", hashedPassword, "https://randomuser.me/api/portraits/women/90.jpg", "Universidad de Pamplona", "Estudiante de medicina, paso poco tiempo en casa por las rotaciones.", 1, JSON.stringify({ schedule: "morning", noise: "low", pets: "no", smoking: "no", study: "quiet" })],
+      ["Mateo Jimenez", "mateo@yahoo.com", hashedPassword, "https://randomuser.me/api/portraits/men/12.jpg", "Universidad de Pamplona", "Me gusta cocinar y el buen ambiente. Busco roomie buena onda.", 1, JSON.stringify({ schedule: "flexible", noise: "medium", pets: "yes", smoking: "no", study: "social" })],
+      ["Isabella Castro", "isabella@gmail.com", hashedPassword, "https://randomuser.me/api/portraits/women/12.jpg", "Universidad de Pamplona", "Busco un lugar tranquilo para terminar mi tesis de derecho.", 1, JSON.stringify({ schedule: "morning", noise: "low", pets: "no", smoking: "no", study: "quiet" })],
+      ["Santiago Ortiz", "santiago@unipamplona.edu.co", hashedPassword, "https://randomuser.me/api/portraits/men/46.jpg", "Universidad de Pamplona", "Deportista, busco roomie con hábitos saludables y ordenado.", 0, JSON.stringify({ schedule: "morning", noise: "low", pets: "no", smoking: "no", study: "quiet" })],
+      ["Camila Duarte", "camila@gmail.com", hashedPassword, "https://randomuser.me/api/portraits/women/65.jpg", "Universidad de Pamplona", "Estudiante de artes, busco un espacio creativo y relajado.", 1, JSON.stringify({ schedule: "night", noise: "medium", pets: "yes", smoking: "yes", study: "social" })],
+      ["Sebastian Peña", "sebas@gmail.com", hashedPassword, "https://randomuser.me/api/portraits/men/85.jpg", "Universidad de Pamplona", "Gamer y programador. Busco internet rápido y buena vibra.", 0, JSON.stringify({ schedule: "night", noise: "medium", pets: "no", smoking: "no", study: "quiet" })],
+      ["Mariana Lopez", "mariana@gmail.com", hashedPassword, "https://randomuser.me/api/portraits/women/68.jpg", "Universidad de Pamplona", "Muy tranquila, me gusta leer y el silencio para estudiar.", 1, JSON.stringify({ schedule: "morning", noise: "low", pets: "no", smoking: "no", study: "quiet" })],
+      ["Admin User", "admin@unipamplona.edu.co", hashedPassword, "https://randomuser.me/api/portraits/men/50.jpg", "Sistema", "Administrador de la Plataforma", 1, null]
     ];
     
     const userIds: number[] = [];
@@ -563,11 +563,13 @@ async function startServer() {
       return res.status(400).json({ error: "Solo se permiten correos @unipamplona.edu.co" });
     }
 
+    const defaultIcons = ['smile', 'ghost', 'cat', 'dog', 'rocket', 'coffee', 'gamepad', 'palette', 'music', 'pizza'];
+    const finalPhotoUrl = photo_url || `icon:${defaultIcons[Math.floor(Math.random() * defaultIcons.length)]}`;
     const hashedPassword = bcrypt.hashSync(password, 10);
     try {
-      const result = db.prepare("INSERT INTO users (name, email, password_hash, university, photo_url) VALUES (?, ?, ?, ?, ?)").run(name, email, hashedPassword, university, photo_url);
+      const result = db.prepare("INSERT INTO users (name, email, password_hash, university, photo_url) VALUES (?, ?, ?, ?, ?)").run(name, email, hashedPassword, university, finalPhotoUrl);
       const token = jwt.sign({ id: result.lastInsertRowid, email }, JWT_SECRET);
-      res.json({ token, user: { id: result.lastInsertRowid, name, email, university, photo_url } });
+      res.json({ token, user: { id: result.lastInsertRowid, name, email, university, photo_url: finalPhotoUrl } });
     } catch (e) {
       res.status(400).json({ error: "El correo ya está registrado" });
     }
