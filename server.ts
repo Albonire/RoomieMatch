@@ -29,8 +29,8 @@ if (!fs.existsSync(UPLOADS_DIR)) {
 
 // Multer config: filename único, solo imágenes, max 5MB
 const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, UPLOADS_DIR),
-  filename: (_req, file, cb) => {
+  destination: (_req: Request, _file: any, cb: any) => cb(null, UPLOADS_DIR),
+  filename: (_req: Request, file: any, cb: any) => {
     const uniqueSuffix = crypto.randomBytes(16).toString("hex");
     const ext = path.extname(file.originalname).toLowerCase() || ".jpg";
     cb(null, `${uniqueSuffix}${ext}`);
@@ -40,7 +40,7 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
-  fileFilter: (_req, file, cb) => {
+  fileFilter: (_req: Request, file: any, cb: any) => {
     const allowed = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
     if (allowed.includes(file.mimetype)) {
       cb(null, true);
@@ -61,6 +61,7 @@ interface AuthRequest extends Request {
     id: number;
     email: string;
   };
+  file?: any;
 }
 
 // Initialize Database
@@ -424,7 +425,7 @@ async function startServer() {
         .map((photo) => encodeImageProxy(photo));
     };
 
-    app.get('/api/image-proxy', async (req, res) => {
+    app.get('/api/image-proxy', async (req: Request, res: Response) => {
       const url = typeof req.query.url === 'string' ? req.query.url : '';
       if (!url) {
         return res.status(400).send('Missing url');
@@ -844,7 +845,7 @@ async function startServer() {
     app.use(express.static(clientPath));
     
     // Manejo de SPA: Cualquier ruta que no sea /api devuelve index.html
-    app.get("*", (req, res) => {
+    app.get("*", (req: Request, res: Response) => {
       res.sendFile(path.join(clientPath, "index.html"));
     });
   }
