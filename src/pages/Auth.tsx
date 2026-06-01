@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Avatar from '../components/Avatar';
+import { uploadImage } from '../lib/imageCompression';
 import { 
   LogIn, UserPlus, Mail, Lock, User, GraduationCap, 
   Image as ImageIcon, Upload, User as UserIcon, Smile, 
@@ -47,7 +48,7 @@ export default function Auth() {
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, token } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,14 +80,15 @@ export default function Auth() {
     }
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setForm({ ...form, photo_url: reader.result as string });
-      };
-      reader.readAsDataURL(file);
+      try {
+        const url = await uploadImage(file, token, 'profile');
+        setForm({ ...form, photo_url: url });
+      } catch (err: any) {
+        setError(err.message || 'Error subiendo foto');
+      }
     }
   };
 

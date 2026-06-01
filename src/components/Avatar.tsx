@@ -59,9 +59,13 @@ export default function Avatar({ photoUrl, className = "w-10 h-10 border border-
     );
   }
 
-  const resolvedSrc = photoUrl && /^https?:\/\//i.test(photoUrl)
-    ? `/api/image-proxy?url=${encodeURIComponent(photoUrl)}`
-    : photoUrl || '';
+  const resolvedSrc = photoUrl
+    ? (photoUrl.startsWith('http') || photoUrl.startsWith('/') || photoUrl.startsWith('data:') || photoUrl.startsWith('icon:'))
+      ? photoUrl.startsWith('http') 
+        ? `/api/image-proxy?url=${encodeURIComponent(photoUrl)}`
+        : photoUrl
+      : photoUrl
+    : '';
 
   if (!resolvedSrc || imageError) {
     return (

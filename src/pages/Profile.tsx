@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Avatar from '../components/Avatar';
+import { uploadImage } from '../lib/imageCompression';
 import { 
   User, Save, CheckCircle, Info, Coffee, PawPrint, 
   Music, BookOpen, Upload, Image as ImageIcon, User as UserIcon, 
@@ -102,14 +103,15 @@ export default function Profile() {
     }
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setForm({ ...form, photo_url: reader.result as string });
-      };
-      reader.readAsDataURL(file);
+    if (file && token) {
+      try {
+        const url = await uploadImage(file, token, 'profile');
+        setForm({ ...form, photo_url: url });
+      } catch (err: any) {
+        console.error('Error subiendo foto:', err);
+      }
     }
   };
 

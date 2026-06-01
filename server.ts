@@ -1,6 +1,8 @@
 import express, { Request, Response, NextFunction } from "express";
 import path from "path";
 import fs from "fs";
+import multer from "multer";
+import crypto from "crypto";
 import Database from "better-sqlite3";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
@@ -18,6 +20,36 @@ if (dbDir !== "." && !fs.existsSync(dbDir)) {
 }
 
 const db = new Database(DB_PATH);
+
+// ── Uploads directory (persistent volume) ──
+const UPLOADS_DIR = process.env.UPLOADS_DIR || path.join(path.dirname(DB_PATH), "uploads");
+if (!fs.existsSync(UPLOADS_DIR)) {
+  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+}
+
+// Multer config: filename único, solo imágenes, max 5MB
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, UPLOADS_DIR),
+  filename: (_req, file, cb) => {
+    const uniqueSuffix = crypto.randomBytes(16).toString("hex");
+    const ext = path.extname(file.originalname).toLowerCase() || ".jpg";
+    cb(null, `${uniqueSuffix}${ext}`);
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  fileFilter: (_req, file, cb) => {
+    const allowed = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+    if (allowed.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Solo se permiten imágenes JPEG, PNG o WebP"));
+    }
+  },
+});
+
 const JWT_SECRET = process.env.JWT_SECRET || "roomie-secret-key-123";
 if (process.env.NODE_ENV === "production" && !process.env.JWT_SECRET) {
   throw new Error("JWT_SECRET is required in production");
@@ -377,7 +409,13 @@ async function startServer() {
     app.use(express.json({ limit: '10mb' }));
     app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-    const encodeImageProxy = (url: string) => `/api/image-proxy?url=${encodeURIComponent(url)}`;
+    // Servir uploads desde el volumen persistente
+    app.use("/uploads", express.static(UPLOADS_DIR));
+
+    const encodeImageProxy = (url: string) => {
+      if (url.startsWith("/uploads/")) return url;
+      return `/api/image-proxy?url=${encodeURIComponent(url)}`;
+    };
 
     const proxyPhotoList = (photos: any) => {
       if (!Array.isArray(photos)) return [];
@@ -472,12 +510,59 @@ async function startServer() {
     });
   });
 
+  // ── Image Upload (Temp for Registration) ──
+  app.post("/api/upload/temp", (req: Request, res: Response) => {
+    upload.single("image")(req, res, (err: any) => {
+      if (err) {
+        if (err instanceof multer.MulterError) {
+          if (err.code === "LIMIT_FILE_SIZE") {
+            return res.status(400).json({ error: "La imagen supera los 5MB" });
+          }
+          return res.status(400).json({ error: err.message });
+        }
+        return res.status(400).json({ error: err.message });
+      }
+      if (!req.file) {
+        return res.status(400).json({ error: "No se recibió ninguna imagen" });
+      }
+      const url = `/uploads/${req.file.filename}`;
+      res.json({ url, size: req.file.size });
+    });
+  });
+
+  // ── Image Upload ──
+  app.post("/api/upload", authenticateToken, (req: AuthRequest, res: Response) => {
+    upload.single("image")(req, res, (err: any) => {
+      if (err) {
+        if (err instanceof multer.MulterError) {
+          if (err.code === "LIMIT_FILE_SIZE") {
+            return res.status(400).json({ error: "La imagen supera los 5MB" });
+          }
+          return res.status(400).json({ error: err.message });
+        }
+        return res.status(400).json({ error: err.message });
+      }
+      
+      if (!req.file) {
+        return res.status(400).json({ error: "No se recibió ninguna imagen" });
+      }
+      
+      const url = `/uploads/${req.file.filename}`;
+      res.json({ url, size: req.file.size });
+    });
+  });
+
   // --- API ROUTES ---
 
   // Auth
   app.post("/api/auth/register", (req: AuthRequest, res: Response) => {
     const { name, email, password, university, photo_url } = req.body;
     
+    // Restrict email domain
+    if (!email.endsWith("@unipamplona.edu.co")) {
+      return res.status(400).json({ error: "Solo se permiten correos @unipamplona.edu.co" });
+    }
+
     const hashedPassword = bcrypt.hashSync(password, 10);
     try {
       const result = db.prepare("INSERT INTO users (name, email, password_hash, university, photo_url) VALUES (?, ?, ?, ?, ?)").run(name, email, hashedPassword, university, photo_url);
@@ -614,7 +699,7 @@ async function startServer() {
     if (!Number.isInteger(numericZoneId)) return res.status(400).json({ error: "La zona es obligatoria" });
     if (!db.prepare("SELECT id FROM zones WHERE id = ?").get(numericZoneId)) return res.status(400).json({ error: "La zona seleccionada no existe" });
     if (!Number.isFinite(numericLat) || !Number.isFinite(numericLng)) return res.status(400).json({ error: "La ubicación en el mapa no es válida" });
-    if (normalizedPhotos.some((photo: string) => !/^https?:\/\//i.test(photo) && !photo.startsWith("/api/image-proxy?url=") && !photo.startsWith("data:image/"))) {
+    if (normalizedPhotos.some((photo: string) => !/^https?:\/\//i.test(photo) && !photo.startsWith("/uploads/") && !photo.startsWith("/api/image-proxy?url=") && !photo.startsWith("data:image/"))) {
       return res.status(400).json({ error: "Las fotos deben ser URLs válidas" });
     }
 
@@ -761,6 +846,39 @@ async function startServer() {
       res.sendFile(path.join(clientPath, "index.html"));
     });
   }
+
+  // ── Orphan Uploads Cleanup ──
+  setInterval(async () => {
+    try {
+      const files = fs.readdirSync(UPLOADS_DIR);
+      const usedPhotos = db.prepare("SELECT photos FROM listings").all() as any[];
+      const usedUrls = new Set<string>();
+      usedPhotos.forEach(row => {
+        try {
+          JSON.parse(row.photos).forEach((p: string) => usedUrls.add(p));
+        } catch {}
+      });
+      const usedProfiles = db.prepare("SELECT photo_url FROM users WHERE photo_url LIKE '/uploads/%'").all() as any[];
+      usedProfiles.forEach(row => usedUrls.add(row.photo_url));
+
+      let deleted = 0;
+      for (const file of files) {
+        const url = `/uploads/${file}`;
+        if (!usedUrls.has(url)) {
+          const filePath = path.join(UPLOADS_DIR, file);
+          const stat = fs.statSync(filePath);
+          // Solo borrar si tiene más de 1 hora (evita borrar subidas en progreso)
+          if (Date.now() - stat.mtimeMs > 60 * 60 * 1000) {
+            fs.unlinkSync(filePath);
+            deleted++;
+          }
+        }
+      }
+      if (deleted > 0) console.log(`[Cleanup] Removed ${deleted} orphan uploads`);
+    } catch (e) {
+      console.error('[Cleanup] Error:', e);
+    }
+  }, 60 * 60 * 1000); // Cada hora
 
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
