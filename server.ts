@@ -150,9 +150,17 @@ const seedData = (force = false) => {
     }
 
     console.log("Seeding fresh data for Pamplona...");
-    const insertUser = db.prepare("INSERT INTO users (name, email, password_hash, photo_url, university, bio, is_verified, compatibility_form) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    const insertUser = db.prepare(`
+      INSERT INTO users (name, email, password_hash, photo_url, university, bio, is_verified, compatibility_form)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(email) DO UPDATE SET
+        photo_url = excluded.photo_url,
+        name = excluded.name,
+        university = excluded.university,
+        bio = excluded.bio
+    `);
     const hashedPassword = bcrypt.hashSync("password123", 10);
-    
+
     const usersData = [
       ["Fabian Garcia", "fabian@example.com", hashedPassword, "https://randomuser.me/api/portraits/men/32.jpg", "Universidad de Pamplona", "Estudiante de ingeniería, busco roomie tranquilo y responsable.", 1, JSON.stringify({ schedule: "morning", noise: "low", pets: "no", smoking: "no", study: "quiet" })],
       ["Diana Prince", "diana@unipamplona.edu.co", hashedPassword, "https://randomuser.me/api/portraits/women/44.jpg", "Universidad de Pamplona", "Estudiante de arquitectura, muy organizada y amante del café.", 1, JSON.stringify({ schedule: "morning", noise: "low", pets: "no", smoking: "no", study: "quiet" })],
@@ -166,12 +174,15 @@ const seedData = (force = false) => {
       ["Mariana Lopez", "mariana@gmail.com", hashedPassword, "https://randomuser.me/api/portraits/women/68.jpg", "Universidad de Pamplona", "Muy tranquila, me gusta leer y el silencio para estudiar.", 1, JSON.stringify({ schedule: "morning", noise: "low", pets: "no", smoking: "no", study: "quiet" })],
       ["Admin User", "admin@unipamplona.edu.co", hashedPassword, "https://randomuser.me/api/portraits/men/50.jpg", "Sistema", "Administrador de la Plataforma", 1, null]
     ];
-    
+
     const userIds: number[] = [];
-    usersData.forEach(u => {
-      const result = insertUser.run(...u);
-      userIds.push(Number(result.lastInsertRowid));
+    const insertManyUsers = db.transaction((users: any[][]) => {
+      for (const user of users) {
+        const result = insertUser.run(...user);
+        userIds.push(Number(result.lastInsertRowid));
+      }
     });
+    insertManyUsers(usersData);
 
     console.log("Seeding zones for Pamplona...");
     const insertZone = db.prepare("INSERT INTO zones (name, safety_level, description, geojson) VALUES (?, ?, ?, ?)");

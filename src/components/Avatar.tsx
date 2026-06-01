@@ -33,6 +33,12 @@ const AVATAR_ICONS: Record<string, any> = {
   headphones: Headphones
 };
 
+const TRUSTED_DOMAINS = [
+  'randomuser.me',
+  'i.pravatar.cc',
+  'avatars.githubusercontent.com'
+];
+
 interface AvatarProps {
   photoUrl?: string;
   className?: string;
@@ -56,12 +62,13 @@ export default function Avatar({ photoUrl, className = "w-10 h-10 border border-
     );
   }
 
+  const needsProxy = photoUrl?.startsWith('http') &&
+    !TRUSTED_DOMAINS.some(domain => photoUrl!.includes(domain));
+
   const resolvedSrc = photoUrl
-    ? (photoUrl.startsWith('http') || photoUrl.startsWith('/') || photoUrl.startsWith('data:') || photoUrl.startsWith('icon:'))
-      ? photoUrl.startsWith('http') 
-        ? `/api/image-proxy?url=${encodeURIComponent(photoUrl)}`
-        : photoUrl
-      : photoUrl
+    ? (photoUrl.startsWith('http')
+        ? (needsProxy ? `/api/image-proxy?url=${encodeURIComponent(photoUrl)}` : photoUrl)
+        : photoUrl)
     : '';
 
   if (!resolvedSrc || imageError) {
@@ -73,10 +80,10 @@ export default function Avatar({ photoUrl, className = "w-10 h-10 border border-
   }
 
   return (
-    <img 
+    <img
       src={resolvedSrc}
-      alt="Avatar de usuario" 
-      className={`${className} object-cover`} 
+      alt="Avatar de usuario"
+      className={`${className} object-cover`}
       referrerPolicy="no-referrer"
       onError={() => setImageError(true)}
     />
