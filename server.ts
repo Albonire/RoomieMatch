@@ -144,12 +144,8 @@ const seedData = (force = false) => {
     }
 
     const userCount = (db.prepare("SELECT COUNT(*) as count FROM users").get() as any).count;
-    if (userCount > 0 && !force) {
-      console.log("Database already has data, skipping seed.");
-      return;
-    }
 
-    console.log("Seeding fresh data for Pamplona...");
+    console.log("Updating seed users...");
     const insertUser = db.prepare(`
       INSERT INTO users (name, email, password_hash, photo_url, university, bio, is_verified, compatibility_form)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -182,9 +178,14 @@ const seedData = (force = false) => {
         userIds.push(Number(result.lastInsertRowid));
       }
     });
-    insertManyUsers(usersData);
+      insertManyUsers(usersData);
 
-    console.log("Seeding zones for Pamplona...");
+      if (userCount > 0 && !force) {
+        console.log("Database already has data, skipping listings/ratings seed.");
+        return;
+      }
+
+      console.log("Seeding zones for Pamplona...");
     const insertZone = db.prepare("INSERT INTO zones (name, safety_level, description, geojson) VALUES (?, ?, ?, ?)");
     const zonesData = [
       ["Campus Principal & El Humilladero", "green", "Área universitaria con alta vigilancia. Incluye la Sede Principal de Unipamplona y zonas residenciales estudiantiles seguras.", JSON.stringify({ type: "Polygon", coordinates: [[[-72.6465, 7.3765], [-72.6430, 7.3760], [-72.6425, 7.3735], [-72.6450, 7.3730], [-72.6470, 7.3745], [-72.6465, 7.3765]]] })],
