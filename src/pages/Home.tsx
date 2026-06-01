@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Filter, MapPin, Calendar, Users, Star } from 'lucide-react';
+import LazyImage from '../components/LazyImage';
 
 interface Listing {
   id: number;
@@ -146,11 +147,10 @@ export default function Home() {
             className="group editorial-card editorial-card-interactive flex flex-col"
           >
             <div className="relative aspect-[4/3] overflow-hidden rounded-t-sm">
-              <img
+              <LazyImage
                 src={listing.photos[0] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80'}
                 alt={listing.title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                referrerPolicy="no-referrer"
+                className="w-full h-full transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute top-4 left-4">
                 <span className={`editorial-tag backdrop-blur-md bg-editorial-surface/90 ${getSafetyColor(listing.safety_level)}`}>

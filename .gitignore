@@ -1,9 +1,31 @@
+# .gitignore
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Dependencies
 node_modules/
-build/
+
+# Build
 dist/
-coverage/
-.DS_Store
+build/
+
+# Logs
 *.log
-.env*
-!.env.example
-roomiematch.db
+npm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

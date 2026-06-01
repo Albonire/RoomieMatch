@@ -5,8 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "start": "tsx server.ts",
-    "build": "vite build",
+    "build:client": "vite build",
+    "build:server": "tsc",
+    "build": "npm run build:client && npm run build:server",
+    "start": "NODE_ENV=production node dist/server/server.js",
+    "start:dev": "tsx watch server.ts",
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"

@@ -1,6 +1,6 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import path from "path";
-import { createServer as createViteServer } from "vite";
+import fs from "fs";
 import Database from "better-sqlite3";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
@@ -10,19 +10,25 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const DB_PATH = process.env.DB_PATH || "roomiematch.db";
+
+// Asegurar que el directorio exista (importante para el volumen de Railway)
+const dbDir = path.dirname(DB_PATH);
+if (dbDir !== "." && !fs.existsSync(dbDir)) {
+  fs.mkdirSync(dbDir, { recursive: true });
+}
+
 const db = new Database(DB_PATH);
 const JWT_SECRET = process.env.JWT_SECRET || "roomie-secret-key-123";
 if (process.env.NODE_ENV === "production" && !process.env.JWT_SECRET) {
   throw new Error("JWT_SECRET is required in production");
 }
 
-// Extend Express Request
-declare global {
-  namespace Express {
-    interface Request {
-      user?: any;
-    }
-  }
+// Crear una interfaz extendida para Request
+interface AuthRequest extends Request {
+  user?: {
+    id: number;
+    email: string;
+  };
 }
 
 // Initialize Database
@@ -364,8 +370,10 @@ function ensureListingPhotosFromCurated(urls: string[], minPhotos = 4) {
 ensureListingPhotosFromCurated(CURATED_IMAGES, 4);
 
 async function startServer() {
+  const app = express();
+  const isProd = process.env.NODE_ENV === "production";
+
   try {
-    const app = express();
     app.use(express.json({ limit: '10mb' }));
     app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
@@ -428,34 +436,46 @@ async function startServer() {
     });
 
     // Auth Middleware
-    const authenticateToken = (req: any, res: any, next: any) => {
+    const authenticateToken = (req: AuthRequest, res: Response, next: NextFunction) => {
       const authHeader = req.headers['authorization'];
       const token = authHeader && authHeader.split(' ')[1];
-      if (!token) return res.status(401).json({ error: "Token faltante" });
-
-      jwt.verify(token, JWT_SECRET, (err: any, user: any) => {
-        if (err) return res.status(403).json({ error: "Token inválido o expirado" });
-        req.user = user;
+    
+      if (!token) {
+        return res.status(401).json({ error: 'Token requerido' });
+      }
+    
+      try {
+        const decoded = jwt.verify(token, JWT_SECRET) as { id: number; email: string };
+        req.user = decoded;
         next();
-      });
+      } catch (err) {
+        return res.status(403).json({ error: 'Token inválido' });
+      }
     };
 
   // --- DEBUG ROUTES ---
-  app.get("/api/debug/db", (req, res) => {
-    try {
-      const userCount = (db.prepare("SELECT COUNT(*) as count FROM users").get() as any).count;
-      const listingCount = (db.prepare("SELECT COUNT(*) as count FROM listings").get() as any).count;
-      const zoneCount = (db.prepare("SELECT COUNT(*) as count FROM zones").get() as any).count;
-      res.json({ users: userCount, listings: listingCount, zones: zoneCount });
-    } catch (e: any) {
-      res.status(500).json({ error: e.message });
+  app.get("/api/debug/db", authenticateToken, (req: AuthRequest, res: Response) => {
+    // Verificar que sea admin
+    if (req.user!.email !== 'admin@unipamplona.edu.co') {
+      return res.status(403).json({ error: 'Acceso denegado' });
     }
+    
+    const users = db.prepare('SELECT COUNT(*) as count FROM users').get() as any;
+    const listings = db.prepare('SELECT COUNT(*) as count FROM listings').get() as any;
+    const zones = db.prepare('SELECT COUNT(*) as count FROM zones').get() as any;
+    
+    res.json({
+      users: users.count,
+      listings: listings.count,
+      zones: zones.count,
+      timestamp: new Date().toISOString()
+    });
   });
 
   // --- API ROUTES ---
 
   // Auth
-  app.post("/api/auth/register", (req, res) => {
+  app.post("/api/auth/register", (req: AuthRequest, res: Response) => {
     const { name, email, password, university, photo_url } = req.body;
     
     const hashedPassword = bcrypt.hashSync(password, 10);
@@ -468,7 +488,7 @@ async function startServer() {
     }
   });
 
-  app.post("/api/auth/login", (req, res) => {
+  app.post("/api/auth/login", (req: AuthRequest, res: Response) => {
     const { email, password } = req.body;
     const user = db.prepare("SELECT * FROM users WHERE email = ?").get(email) as any;
     if (user && bcrypt.compareSync(password, user.password_hash)) {
@@ -480,27 +500,27 @@ async function startServer() {
   });
 
   // Profiles
-  app.get("/api/profiles/me", authenticateToken, (req, res) => {
-    const user = db.prepare("SELECT id, name, email, photo_url, university, bio, is_verified, compatibility_form FROM users WHERE id = ?").get(req.user.id);
+  app.get("/api/profiles/me", authenticateToken, (req: AuthRequest, res: Response) => {
+    const user = db.prepare("SELECT id, name, email, photo_url, university, bio, is_verified, compatibility_form FROM users WHERE id = ?").get(req.user!.id);
     if (!user) return res.status(404).json({ error: "Perfil no encontrado" });
     res.json(user);
   });
 
-  app.put("/api/profiles/me", authenticateToken, (req, res) => {
+  app.put("/api/profiles/me", authenticateToken, (req: AuthRequest, res: Response) => {
     const { name, photo_url, university, bio, compatibility_form } = req.body;
     db.prepare("UPDATE users SET name = ?, photo_url = ?, university = ?, bio = ?, compatibility_form = ? WHERE id = ?")
-      .run(name, photo_url, university, bio, JSON.stringify(compatibility_form), req.user.id);
+      .run(name, photo_url, university, bio, JSON.stringify(compatibility_form), req.user!.id);
     res.json({ success: true });
   });
 
-  app.get("/api/profiles/:id", (req, res) => {
+  app.get("/api/profiles/:id", (req: AuthRequest, res: Response) => {
     const user = db.prepare("SELECT id, name, photo_url, university, bio, is_verified, compatibility_form FROM users WHERE id = ?").get(req.params.id);
     if (!user) return res.status(404).json({ error: "Usuario no encontrado" });
     res.json(user);
   });
 
   // Listings
-  app.get("/api/listings", (req, res) => {
+  app.get("/api/listings", (req: AuthRequest, res: Response) => {
     try {
       const { minPrice, maxPrice, zoneId, date } = req.query;
       let query = `
@@ -534,7 +554,7 @@ async function startServer() {
     }
   });
 
-  app.get("/api/listings/:id", (req, res) => {
+  app.get("/api/listings/:id", (req: AuthRequest, res: Response) => {
     try {
       const listing = db.prepare(`
         SELECT l.*, z.name as zone_name, z.safety_level, u.name as owner_name, u.photo_url as owner_photo
@@ -568,7 +588,7 @@ async function startServer() {
     }
   });
 
-  app.post("/api/listings", authenticateToken, (req, res) => {
+  app.post("/api/listings", authenticateToken, (req: AuthRequest, res: Response) => {
     const { title, description, address, price, available_from, max_occupants, photos, rules, zone_id, lat, lng } = req.body;
 
     const normalizedTitle = typeof title === "string" ? title.trim() : "";
@@ -602,7 +622,7 @@ async function startServer() {
       INSERT INTO listings (user_id, title, description, address, price, available_from, max_occupants, photos, rules, zone_id, lat, lng)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
-      req.user.id,
+      req.user!.id,
       normalizedTitle,
       normalizedDescription,
       normalizedAddress,
@@ -618,13 +638,13 @@ async function startServer() {
     res.json({ id: result.lastInsertRowid });
   });
 
-  app.delete("/api/listings/:id", authenticateToken, (req, res) => {
+  app.delete("/api/listings/:id", authenticateToken, (req: AuthRequest, res: Response) => {
     const listing = db.prepare("SELECT user_id FROM listings WHERE id = ?").get(req.params.id) as any;
     if (!listing) return res.status(404).json({ error: "Publicación no encontrada" });
     
     // Admin check or owner check
-    const user = db.prepare("SELECT email FROM users WHERE id = ?").get(req.user.id) as any;
-    if (listing.user_id !== req.user.id && user.email !== 'admin@unipamplona.edu.co') {
+    const user = db.prepare("SELECT email FROM users WHERE id = ?").get(req.user!.id) as any;
+    if (listing.user_id !== req.user!.id && user.email !== 'admin@unipamplona.edu.co') {
       return res.status(403).json({ error: "No autorizado" });
     }
     
@@ -633,7 +653,7 @@ async function startServer() {
   });
 
   // Ratings
-  app.post("/api/listings/:id/rate", authenticateToken, (req, res) => {
+  app.post("/api/listings/:id/rate", authenticateToken, (req: AuthRequest, res: Response) => {
     const { stars, comment } = req.body;
     const numericStars = Number(stars);
     const normalizedComment = typeof comment === "string" ? comment.trim() : "";
@@ -647,7 +667,7 @@ async function startServer() {
 
     try {
       db.prepare("INSERT INTO ratings (listing_id, user_id, stars, comment) VALUES (?, ?, ?, ?)")
-        .run(req.params.id, req.user.id, numericStars, normalizedComment);
+        .run(req.params.id, req.user!.id, numericStars, normalizedComment);
       res.json({ success: true });
     } catch (e) {
       res.status(400).json({ error: "Ya has calificado esta publicación" });
@@ -655,7 +675,7 @@ async function startServer() {
   });
 
   // Zones
-  app.get("/api/zones", (req, res) => {
+  app.get("/api/zones", (req: AuthRequest, res: Response) => {
     try {
       const zones = db.prepare("SELECT * FROM zones").all();
       console.log(`Returning ${zones.length} zones from DB`);
@@ -675,14 +695,14 @@ async function startServer() {
   });
 
   // Matching
-  app.get("/api/matching", authenticateToken, (req, res) => {
+  app.get("/api/matching", authenticateToken, (req: AuthRequest, res: Response) => {
     try {
-      const currentUser = db.prepare("SELECT compatibility_form FROM users WHERE id = ?").get(req.user.id) as any;
+      const currentUser = db.prepare("SELECT compatibility_form FROM users WHERE id = ?").get(req.user!.id) as any;
       if (!currentUser) return res.status(404).json({ error: "Usuario no encontrado" });
       if (!currentUser.compatibility_form) return res.status(400).json({ error: "Primero completa tu formulario" });
       
       const myForm = JSON.parse(currentUser.compatibility_form);
-      const others = db.prepare("SELECT id, name, photo_url, university, compatibility_form FROM users WHERE id != ? AND compatibility_form IS NOT NULL").all(req.user.id);
+      const others = db.prepare("SELECT id, name, photo_url, university, compatibility_form FROM users WHERE id != ? AND compatibility_form IS NOT NULL").all(req.user!.id);
       
       const scored = others.map((other: any) => {
         try {
@@ -707,15 +727,15 @@ async function startServer() {
   });
 
   // Admin
-  app.get("/api/admin/users", authenticateToken, (req, res) => {
-    const user = db.prepare("SELECT email FROM users WHERE id = ?").get(req.user.id) as any;
+  app.get("/api/admin/users", authenticateToken, (req: AuthRequest, res: Response) => {
+    const user = db.prepare("SELECT email FROM users WHERE id = ?").get(req.user!.id) as any;
     if (!user || user.email !== 'admin@unipamplona.edu.co') return res.status(403).json({ error: "No autorizado" });
     const users = db.prepare("SELECT id, name, email, is_verified FROM users").all();
     res.json(users);
   });
 
-  app.post("/api/admin/verify/:id", authenticateToken, (req, res) => {
-    const user = db.prepare("SELECT email FROM users WHERE id = ?").get(req.user.id) as any;
+  app.post("/api/admin/verify/:id", authenticateToken, (req: AuthRequest, res: Response) => {
+    const user = db.prepare("SELECT email FROM users WHERE id = ?").get(req.user!.id) as any;
     if (!user || user.email !== 'admin@unipamplona.edu.co') return res.status(403).json({ error: "No autorizado" });
     const { is_verified } = req.body;
     db.prepare("UPDATE users SET is_verified = ? WHERE id = ?").run(is_verified ? 1 : 0, req.params.id);
@@ -723,21 +743,28 @@ async function startServer() {
   });
 
   // --- VITE MIDDLEWARE ---
-  if (process.env.NODE_ENV !== "production") {
+  if (!isProd) {
+    // Desarrollo: Iniciar Vite dinámicamente
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
     });
     app.use(vite.middlewares);
   } else {
-    app.get('*', (req, res) => {
-      res.status(404).json({ error: "Not found" });
+    // Producción: Servir estáticos de Vite desde dist/client
+    const clientPath = path.join(__dirname, "../client");
+    app.use(express.static(clientPath));
+    
+    // Manejo de SPA: Cualquier ruta que no sea /api devuelve index.html
+    app.get("*", (req, res) => {
+      res.sendFile(path.join(clientPath, "index.html"));
     });
   }
 
-  const PORT = Number(process.env.PORT || 3000);
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://0.0.0.0:${PORT}`);
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT} in ${isProd ? "production" : "development"} mode`);
   });
 } catch (error) {
   console.error("Failed to start server:", error);
