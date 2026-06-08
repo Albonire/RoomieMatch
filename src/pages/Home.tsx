@@ -78,7 +78,7 @@ export default function Home() {
   return (
     <div className="space-y-12">
       <header className="mb-20 max-w-4xl">
-        <h1 className="text-5xl md:text-7xl font-display font-medium tracking-tight leading-[1.05] mb-8 text-editorial-ink">
+        <h1 className="text-3xl sm:text-5xl md:text-7xl font-display font-medium tracking-tight leading-[1.05] mb-8 text-editorial-ink">
           Encuentra tu <br />
           <span className="text-editorial-accent italic">Próximo Hogar</span>
         </h1>
@@ -89,7 +89,7 @@ export default function Home() {
       </header>
 
       <div className="editorial-card p-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
           <div>
             <label className="editorial-label">Precio Mínimo</label>
             <input
@@ -162,7 +162,7 @@ export default function Home() {
               </div>
             </div>
             <div className="p-6 flex-1 flex flex-col space-y-4">
-              <h3 className="text-2xl font-display font-medium leading-tight group-hover:text-editorial-accent transition-colors text-editorial-ink">
+              <h3 className="text-xl sm:text-2xl font-display font-medium leading-tight group-hover:text-editorial-accent transition-colors text-editorial-ink">
                 {listing.title}
               </h3>
               <div className="flex items-center text-[11px] font-sans text-editorial-tertiary">

@@ -132,10 +132,10 @@ export default function CreateListing() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto py-16">
-      <div className="editorial-card p-8 md:p-12 lg:p-16 space-y-12">
+    <div className="max-w-3xl mx-auto py-8 md:py-16 px-4 sm:px-0">
+      <div className="editorial-card p-5 sm:p-8 md:p-12 lg:p-16 space-y-12">
         <div className="text-center space-y-4 border-b border-editorial-secondary/40 pb-10">
-          <h1 className="text-4xl md:text-5xl font-display font-medium text-editorial-ink tracking-tight leading-none">Publicar Habitación</h1>
+          <h1 className="text-3xl md:text-5xl font-display font-medium text-editorial-ink tracking-tight leading-none">Publicar Habitación</h1>
           <p className="font-sans text-editorial-tertiary text-lg">Comparte tu espacio con otros estudiantes</p>
         </div>
 

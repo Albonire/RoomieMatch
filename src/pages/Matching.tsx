@@ -65,16 +65,16 @@ export default function Matching() {
           <h1 className="text-4xl md:text-5xl font-display font-medium text-editorial-ink tracking-tight leading-none mb-4">Compatibilidad</h1>
           <p className="font-sans text-editorial-tertiary text-lg">Encuentra a tu roommate ideal basado en tus preferencias</p>
         </div>
-        <div className="bg-editorial-surface px-6 py-3 border border-editorial-secondary/60 shadow-editorial flex items-center space-x-3 rounded-sm">
+        <div className="bg-editorial-surface px-4 sm:px-6 py-3 border border-editorial-secondary/60 shadow-editorial flex items-center space-x-3 rounded-sm self-start">
           <Users className="w-5 h-5 text-editorial-accent" />
           <span className="font-display font-medium text-lg tracking-tight text-editorial-ink">{matches.length} Coincidencias</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
         {matches.map(match => (
           <div key={match.id} className="editorial-card overflow-hidden group">
-            <div className="p-8 flex flex-col items-center text-center space-y-6">
+            <div className="p-5 md:p-8 flex flex-col items-center text-center space-y-6">
               <div className="relative">
                 <div className="p-1 bg-editorial-surface rounded-full shadow-sm border border-editorial-secondary/40">
                   <Avatar photoUrl={match.photo_url} className="w-24 h-24 rounded-full border-0" iconClassName="w-12 h-12" />
@@ -94,7 +94,7 @@ export default function Matching() {
                 </div>
               </div>
             </div>
-            <div className="px-8 pb-8">
+            <div className="px-5 pb-5 md:px-8 md:pb-8">
               <Link to={`/profile/${match.id}`} className="editorial-btn w-full flex items-center justify-center group/btn">
                 Ver Perfil <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
               </Link>

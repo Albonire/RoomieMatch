@@ -134,11 +134,11 @@ export default function Profile() {
     <div className="max-w-4xl mx-auto space-y-12">
       <div className="editorial-card overflow-hidden">
         {/* Header banner — only decorative, no text on it */}
-        <div className="h-40 bg-editorial-accent overflow-hidden relative">
+        <div className="h-24 md:h-40 bg-editorial-accent overflow-hidden relative">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.08)_0%,transparent_60%)]"></div>
           <h1 className="absolute inset-0 flex items-center justify-center text-5xl md:text-7xl font-display font-medium text-white/20 tracking-tight italic select-none">Tu Perfil</h1>
         </div>
-        <div className="px-8 md:px-12 pb-12">
+        <div className="px-4 sm:px-8 md:px-12 pb-12">
           {/* Row: avatar overlaps banner with negative margin only on itself; text is always in white space */}
           <div className="flex flex-col md:flex-row md:items-start gap-6 mb-10">
             {/* Only the avatar gets the negative margin — text never enters the banner */}
@@ -180,7 +180,7 @@ export default function Profile() {
                 <label className="editorial-label flex items-center">
                   <ImageIcon className="w-3.5 h-3.5 mr-2 text-editorial-tertiary" /> Elige un Avatar o Sube una Foto
                 </label>
-                <div className="grid grid-cols-6 md:grid-cols-11 gap-2">
+                <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-11 gap-2">
                   {AVATARS.map(avatar => (
                     <button
                       key={avatar.id}
@@ -248,7 +248,7 @@ export default function Profile() {
             </div>
 
             <div className="pt-12 border-t border-editorial-secondary/40">
-              <h3 className="text-3xl font-display font-medium text-editorial-ink mb-8 flex items-center tracking-tight">
+              <h3 className="text-2xl md:text-3xl font-display font-medium text-editorial-ink mb-8 flex items-center tracking-tight">
                 <Heart className="w-7 h-7 mr-4 text-editorial-accent" /> Compatibilidad
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">

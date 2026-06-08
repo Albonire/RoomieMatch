@@ -185,12 +185,12 @@ export default function ListingDetail() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-16">
         <div className="lg:col-span-2 space-y-14">
           {/* Header */}
           <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-              <h1 className="text-4xl md:text-5xl font-display font-medium tracking-tight leading-[1.1] text-editorial-ink">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-medium tracking-tight leading-[1.1] text-editorial-ink">
                 {listing.title}
               </h1>
               {avgRating && (
@@ -225,7 +225,7 @@ export default function ListingDetail() {
           </div>
 
           {/* Map */}
-          <div className="editorial-card overflow-hidden h-[400px] relative z-0">
+          <div className="editorial-card overflow-hidden h-[250px] md:h-[400px] relative z-0">
             <MapContainer 
               center={[listing.lat || 7.37, listing.lng || -72.64]} 
               zoom={15} 
@@ -254,7 +254,7 @@ export default function ListingDetail() {
             
             {user && (
               <form onSubmit={handleRate} className="editorial-card p-8 space-y-6">
-                <div className="flex items-center space-x-6">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
                   <span className="editorial-label mb-0">Tu Calificación</span>
                   <div className="flex space-x-2">
                     {[1, 2, 3, 4, 5].map(s => (
@@ -310,7 +310,7 @@ export default function ListingDetail() {
 
         {/* Sidebar */}
         <div className="space-y-8">
-          <div className="editorial-card p-8 sticky top-28">
+          <div className="editorial-card p-6 md:p-8 sticky top-20 md:top-28">
             <div className="space-y-8">
               <div className="space-y-1">
                 <span className="editorial-label">Precio Mensual</span>

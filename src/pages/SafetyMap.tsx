@@ -46,7 +46,7 @@ export default function SafetyMap() {
           <h1 className="text-4xl md:text-5xl font-display font-medium text-editorial-ink tracking-tight leading-none mb-4">Mapa de Seguridad</h1>
           <p className="font-sans text-editorial-tertiary text-lg">Zonas de riesgo y seguridad estudiantil en Pamplona</p>
         </div>
-        <div className="flex flex-wrap gap-5 bg-editorial-surface p-4 px-6 border border-editorial-secondary/60 shadow-editorial rounded-sm">
+        <div className="flex flex-wrap gap-3 sm:gap-5 bg-editorial-surface p-3 px-4 sm:p-4 sm:px-6 border border-editorial-secondary/60 shadow-editorial rounded-sm self-start">
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
             <span className="font-sans text-[11px] font-medium text-editorial-tertiary">Seguro</span>
@@ -63,7 +63,7 @@ export default function SafetyMap() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        <div className="lg:col-span-8 editorial-card overflow-hidden h-[600px] relative p-0">
+        <div className="lg:col-span-8 editorial-card overflow-hidden h-[350px] md:h-[500px] lg:h-[600px] relative p-0">
           <MapContainer 
             key={zones.length}
             center={[7.375, -72.648]} 
@@ -133,7 +133,7 @@ export default function SafetyMap() {
             <h3 className="text-xl font-display font-medium text-editorial-ink mb-6 tracking-tight">
               Barrios
             </h3>
-            <div className="space-y-3 overflow-y-auto pr-2 flex-1 max-h-[400px]">
+            <div className="space-y-3 overflow-y-auto pr-2 flex-1 max-h-[300px] md:max-h-[400px]">
               {zones.map(zone => (
                 <div key={zone.id} className="p-4 border border-editorial-secondary/30 bg-editorial-surface hover:bg-editorial-bg transition-all cursor-pointer group rounded-sm">
                   <div className="flex items-center justify-between mb-2">

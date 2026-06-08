@@ -80,7 +80,8 @@ export default function Admin() {
             <UserCheck className="w-5 h-5 mr-3 text-editorial-accent" /> Usuarios
           </h2>
           <div className="editorial-card overflow-hidden p-0">
-            <table className="w-full text-left border-collapse">
+            <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse min-w-[400px]">
               <thead className="bg-editorial-ink text-white font-sans text-[11px] uppercase tracking-wider">
                 <tr>
                   <th className="px-6 py-3 border-r border-white/10">Usuario</th>
@@ -116,6 +117,7 @@ export default function Admin() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         </div>
 
@@ -125,7 +127,8 @@ export default function Admin() {
             <Trash2 className="w-5 h-5 mr-3 text-rose-400" /> Publicaciones
           </h2>
           <div className="editorial-card overflow-hidden p-0">
-            <table className="w-full text-left border-collapse">
+            <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse min-w-[350px]">
               <thead className="bg-editorial-ink text-white font-sans text-[11px] uppercase tracking-wider">
                 <tr>
                   <th className="px-6 py-3 border-r border-white/10">Publicación</th>
@@ -153,6 +156,7 @@ export default function Admin() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         </div>
       </div>
