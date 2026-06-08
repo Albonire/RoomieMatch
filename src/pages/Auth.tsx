@@ -82,14 +82,15 @@ export default function Auth() {
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      try {
-        const url = await uploadImage(file, token, 'profile');
-        setForm({ ...form, photo_url: url });
-      } catch (err: any) {
-        setError(err.message || 'Error subiendo foto');
-      }
-    }
+    if (!file) return;
+    // During registration there is no auth token — store as base64 to avoid
+    // depending on an ephemeral server filesystem (Railway resets on deploy).
+    const reader = new FileReader();
+    reader.onload = () => {
+      setForm(f => ({ ...f, photo_url: reader.result as string }));
+    };
+    reader.onerror = () => setError('Error leyendo la imagen');
+    reader.readAsDataURL(file);
   };
 
   const renderPhotoPreview = () => {
