@@ -116,15 +116,25 @@ export default function Auth() {
           {!isLogin && (
             <>
               <div className="flex justify-center mb-8">
-                {form.photo_url ? (
-                  <div className="p-1 border border-editorial-secondary rounded-full shadow-sm">
-                    <Avatar photoUrl={form.photo_url} className="w-20 h-20 md:w-24 md:h-24 rounded-full" iconClassName="w-10 h-10 md:w-12 md:h-12" />
+                <div
+                  className="relative group cursor-pointer"
+                  onClick={() => fileInputRef.current?.click()}
+                  title="Subir foto"
+                >
+                  {form.photo_url ? (
+                    <div className="p-1 border border-editorial-secondary rounded-full shadow-sm">
+                      <Avatar photoUrl={form.photo_url} className="w-20 h-20 md:w-24 md:h-24 rounded-full" iconClassName="w-10 h-10 md:w-12 md:h-12" />
+                    </div>
+                  ) : (
+                    <div className="w-20 h-20 md:w-24 md:h-24 border border-dashed border-editorial-secondary rounded-full flex items-center justify-center font-sans text-[11px] text-editorial-tertiary text-center p-4">
+                      Sin Foto
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-editorial-ink/60 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white font-sans text-[10px] font-medium uppercase tracking-wider pointer-events-none">
+                    <Upload className="w-4 h-4 mb-1" />
+                    Foto
                   </div>
-                ) : (
-                  <div className="w-20 h-20 md:w-24 md:h-24 border border-dashed border-editorial-secondary rounded-full flex items-center justify-center font-sans text-[11px] text-editorial-tertiary text-center p-4">
-                    Sin Foto
-                  </div>
-                )}
+                </div>
               </div>
               
               <div>

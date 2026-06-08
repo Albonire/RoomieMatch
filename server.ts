@@ -571,11 +571,6 @@ async function startServer() {
   app.post("/api/auth/register", (req: AuthRequest, res: Response) => {
     const { name, email, password, university, photo_url } = req.body;
     
-    // Restrict email domain
-    if (!email.endsWith("@unipamplona.edu.co")) {
-      return res.status(400).json({ error: "Solo se permiten correos @unipamplona.edu.co" });
-    }
-
     const defaultIcons = ['smile', 'ghost', 'cat', 'dog', 'rocket', 'coffee', 'gamepad', 'palette', 'music', 'pizza'];
     const finalPhotoUrl = photo_url || `icon:${defaultIcons[Math.floor(Math.random() * defaultIcons.length)]}`;
     const hashedPassword = bcrypt.hashSync(password, 10);
