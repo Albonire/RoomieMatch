@@ -4,6 +4,15 @@ import { Shield, Info, MapPin } from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
+const TILE_DARK = {
+  url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+};
+const TILE_LIGHT = {
+  url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+};
+
 interface Zone {
   id: number;
   name: string;
@@ -14,6 +23,17 @@ interface Zone {
 
 export default function SafetyMap() {
   const [zones, setZones] = useState<Zone[]>([]);
+  const [isDark, setIsDark] = useState(() =>
+    document.documentElement.classList.contains('dark')
+  );
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    });
+    observer.observe(document.documentElement, { attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     console.log("SafetyMap mounted");
@@ -31,6 +51,14 @@ export default function SafetyMap() {
   }, []);
 
   const getZoneColor = (level: string) => {
+    if (isDark) {
+      switch (level) {
+        case 'green': return '#4ADE80';
+        case 'yellow': return '#FDE047';
+        case 'red': return '#F87171';
+        default: return '#6B7280';
+      }
+    }
     switch (level) {
       case 'green': return '#22C55E';
       case 'yellow': return '#EAB308';
@@ -63,16 +91,16 @@ export default function SafetyMap() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        <div className="lg:col-span-8 editorial-card overflow-hidden h-[350px] md:h-[500px] lg:h-[600px] relative p-0">
-          <MapContainer 
-            key={zones.length}
-            center={[7.375, -72.648]} 
-            zoom={15} 
+        <div className="safety-map lg:col-span-8 editorial-card overflow-hidden h-[350px] md:h-[500px] lg:h-[600px] relative p-0">
+          <MapContainer
+            key={`${zones.length}-${isDark}`}
+            center={[7.375, -72.648]}
+            zoom={15}
             style={{ height: '100%', width: '100%' }}
           >
             <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url={isDark ? TILE_DARK.url : TILE_LIGHT.url}
+              attribution={isDark ? TILE_DARK.attribution : TILE_LIGHT.attribution}
             />
             
             {zones.map(zone => {
@@ -85,19 +113,19 @@ export default function SafetyMap() {
                   positions={positions as any}
                   pathOptions={{
                     fillColor: getZoneColor(zone.safety_level),
-                    fillOpacity: 0.35,
+                    fillOpacity: isDark ? 0.25 : 0.35,
                     color: getZoneColor(zone.safety_level),
-                    weight: 2,
+                    weight: isDark ? 1.5 : 2,
                     fill: true
                   }}
                   eventHandlers={{
                     mouseover: (e) => {
                       const layer = e.target;
-                      layer.setStyle({ fillOpacity: 0.6, weight: 3 });
+                      layer.setStyle({ fillOpacity: isDark ? 0.45 : 0.6, weight: isDark ? 2 : 3 });
                     },
                     mouseout: (e) => {
                       const layer = e.target;
-                      layer.setStyle({ fillOpacity: 0.35, weight: 2 });
+                      layer.setStyle({ fillOpacity: isDark ? 0.25 : 0.35, weight: isDark ? 1.5 : 2 });
                     }
                   }}
                 >

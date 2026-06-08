@@ -110,13 +110,35 @@
     @apply bg-rose-900/40 text-rose-300 border-rose-700/50;
   }
 
-  /* Dark mode leaflet tile desaturation for map readability */
+  /* Dark mode leaflet — generic maps (ListingDetail, CreateListing) get a
+     desaturation filter so standard OSM tiles read on dark backgrounds.
+     SafetyMap uses CartoDB dark tiles natively, so the filter is cancelled. */
   .dark .leaflet-tile-pane {
-    filter: brightness(0.7) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+    filter: brightness(0.65) invert(1) contrast(1.4) hue-rotate(180deg) saturate(0.5) brightness(0.75);
+  }
+  .dark .safety-map .leaflet-tile-pane {
+    filter: none;
   }
   .dark .leaflet-control-zoom a {
     background-color: var(--color-editorial-surface) !important;
     color: var(--color-editorial-ink) !important;
     border-color: var(--color-editorial-secondary) !important;
+  }
+  .dark .safety-map .leaflet-control-zoom a {
+    background-color: #1e1e1c !important;
+    color: #c8c4bc !important;
+    border-color: #2e2c2a !important;
+  }
+  .dark .safety-map .leaflet-control-zoom {
+    border-color: #2e2c2a !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5) !important;
+  }
+  .dark .safety-map .leaflet-control-attribution {
+    background: rgba(14,14,13,0.75) !important;
+    color: #6b6966 !important;
+    backdrop-filter: blur(4px);
+  }
+  .dark .safety-map .leaflet-control-attribution a {
+    color: #8a8783 !important;
   }
 }
